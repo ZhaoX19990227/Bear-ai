@@ -1,0 +1,49 @@
+<wxs module="utils">
+var AI_AVATAR = 'https://attach-sit.oss-cn-shanghai.aliyuncs.com/default/28a14b07da0d4e7684758a48649b5ad9.png?1=1';
+module.exports = {
+  aiAvatar: AI_AVATAR
+};
+</wxs>
+
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-shadeBottom" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' hover-class='none' bindtap='BackPage' wx:if="{{canBack}}">
+      <text class='icon-back'></text>
+    </navigator>
+  </view>
+</view>
+
+<view class="container">
+  <view class="cu-card article">
+    <view class="cu-item shadow">
+      <view class="content">
+        <image 
+          src="{{ utils.aiAvatar }}" 
+          mode="aspectFill" 
+          class="avatar cu-avatar round lg"
+        ></image>
+        
+        <view class="desc">
+          <view class="text-xl text-brown text-bold">小肉熊AI</view>
+          <view class="text-sm text-gray">智能健康助手</view>
+        </view>
+        
+        <button 
+          class="cu-btn bg-brown margin-top-sm lg" 
+          open-type="getUserInfo"
+          bindgetuserinfo="onGetUserInfo"
+        >
+          <text class="cuIcon-weixin margin-right-xs"></text>
+          微信快速登录
+        </button>
+        
+        <view class="padding-sm text-center text-sm text-gray">
+          登录即代表您同意
+          <text class="text-brown">《用户协议》</text>
+          和
+          <text class="text-brown">《隐私政策》</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 
