@@ -25,4 +25,4 @@ export const CHAT_MODEL = 'moonshot-v1-8k';
 export const FILE_MODEL = 'moonshot-v1-32k'; 
 7.请多多使用动态交互，卡片等新颖的UI交互方式，主题请使用小熊相关的颜色和元素。ai图标是![alt text](bear.png)
 
-8.请帮我基于当前初始化的框架进行自动构建和代码实现。
+8.请帮我基于当前初始化的框架进行自动构建和代码实现。# Bear-ai
