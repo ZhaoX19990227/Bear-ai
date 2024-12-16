@@ -2,12 +2,38 @@
   "pages": [
     "pages/login/login",
     "pages/logs/logs",
-    "pages/index/index"
+    "pages/index/index",
+    "pages/calendar/calendar",
+    "pages/user/user"
   ],
+  
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom",
-    "backgroundColor": "#F5E6D3"
+    "backgroundColor": "#F5E6D3",
+    "navigationBarTitleText": "饮食记录"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/wechat-icon.png",
+        "selectedIconPath": "images/wechat-icon.png"
+      },
+      {
+        "pagePath": "pages/calendar/calendar",
+        "text": "日历",
+        "iconPath": "images/wechat-icon.png",
+        "selectedIconPath": "images/wechat-icon.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "个人中心",
+        "iconPath": "images/wechat-icon.png",
+        "selectedIconPath": "images/wechat-icon.png"
+      }
+    ]
   },
   "usingComponents": {},
   "style": "v2",
