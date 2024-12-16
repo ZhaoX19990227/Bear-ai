@@ -26,13 +26,9 @@ module.exports = {
     
     <button 
       class="login-btn" 
-      open-type="getUserInfo"
-      bindgetuserinfo="onGetUserInfo"
+      bindtap="onGetUserInfo"
     >
-      <image 
-        src="/images/wechat-icon.png" 
-        class="weixin-icon"
-      ></image>
+      <text class="cuIcon-weixin margin-right-xs"></text>
       微信快速登录
     </button>
     

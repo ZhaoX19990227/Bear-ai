@@ -2,63 +2,221 @@
 <navigation-bar title="BearAI" back="{{false}}" color="white" background="linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)"></navigation-bar>
 
 <view class="container">
-  <view class="cu-card case-list">
-    <view class="cu-item shadow-blur animation-scale-up">
-      <view class="cu-avatar xl round" style="background-image:url('{{userInfo.avatarUrl}}');">
-        <view class="cu-tag badge cu-tag-top-right bg-red" wx:if="{{!hasUserInfo}}">未登录</view>
+  <!-- 轮播图 -->
+  <swiper 
+    class="card-swiper" 
+    indicator-dots="{{true}}" 
+    circular="{{true}}" 
+    autoplay="{{true}}" 
+    interval="3000" 
+    duration="500"
+  >
+    <swiper-item wx:for="{{swiperList}}" wx:key="index" class="{{item.type}}">
+      <view 
+        class="swiper-item" 
+        style="background-image:url({{item.url}})"
+        bindtap="onSwiperItemTap"
+        data-id="{{item.id}}"
+      >
+        <view class="swiper-title">{{item.title}}</view>
       </view>
-      <view class="content">
-        <view class="text-cut">
-          <block wx:if="{{!hasUserInfo}}">
-            <button class="cu-btn round bg-blue" bindtap="getUserProfile">
-              <text class="cuIcon-people"></text> 登录
-            </button>
-          </block>
-          <block wx:else>
-            <text class="text-bold text-xl">{{userInfo.nickName}}</text>
-          </block>
-        </view>
-        <view class="text-gray text-sm flex">
-          <text class="text-cut">{{motto}}</text>
-        </view>
-      </view>
+    </swiper-item>
+  </swiper>
+
+
+
+
+  <!-- 今日饮食容器 -->
+  <view class="diet-container">
+    <view class="diet-title-container">
+    <view class="diet-title">今日饮食</view>
+    <view class="add-diet-btn" bindtap="showAddDietModal">
+      <text class="cuIcon-add"></text>
     </view>
   </view>
-
-  <view class="cu-list menu-avatar">
-    <view class="cu-item" bindtap="onFeatureClick">
-      <view class="cu-avatar bg-green cuIcon-explore"></view>
-      <view class="content">
-        <view class="text-black">探索功能</view>
-        <view class="text-gray text-sm">发现 BearAI 的神奇能力</view>
+    <!-- 今日饮食总览 -->
+    <view class="diet-summary">
+      <view class="summary-item">
+        <text class="cuIcon-fork"></text>
+        <text>热量：{{totalCalories}} 千卡</text>
       </view>
-      <view class="action">
-        <view class="cuIcon-right text-gray"></view>
+      <view class="summary-item">
+        <text class="cuIcon-activity"></text>
+        <text>蛋白质：{{totalProtein}} 克</text>
+        
       </view>
     </view>
-    <view class="cu-item" bindtap="onSettingsClick">
-      <view class="cu-avatar bg-blue cuIcon-settings"></view>
-      <view class="content">
-        <view class="text-black">系统设置</view>
-        <view class="text-gray text-sm">个性化您的 BearAI 体验</view>
-      </view>
-      <view class="action">
-        <view class="cuIcon-right text-gray"></view>
-      </view>
+
+    <!-- 今日饮食记录列表 -->
+    <scroll-view 
+      scroll-y 
+      class="diet-records-list" 
+      wx:if="{{groupedDietRecords.length > 0}}"
+    >
+      <block wx:for="{{groupedDietRecords}}" wx:key="mealType">
+        <view class="diet-meal-group">
+          <view class="diet-meal-type">{{item.mealType}}</view>
+          <block wx:for="{{item.records}}" wx:key="index" wx:for-item="record">
+            <view class="cu-item diet-record">
+              <view class="diet-record-content">
+                <text class="diet-record-name">{{record.foodName}}</text>
+                <view class="diet-record-details">
+                  <text>热量：{{record.calories}} 千卡</text>
+                  <text>蛋白质：{{record.protein}} 克</text>
+                  <text class="diet-record-time">{{record.time}}</text>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- 健康资讯 -->
+  <view class="article-section">
+    <view class="section-title">健康资讯</view>
+    <view class="cu-list menu-card">
+      <block wx:for="{{articleList}}" wx:key="index">
+        <view class="cu-item" bindtap="onArticleClick" data-id="{{item.id}}">
+          <view class="cu-avatar" style="background-image:url({{item.cover}})"></view>
+          <view class="content">
+            <view class="text-black">{{item.title}}</view>
+            <view class="text-gray text-sm">{{item.summary}}</view>
+          </view>
+          <view class="action">
+            <text class="cuIcon-right text-gray"></text>
+          </view>
+        </view>
+      </block>
     </view>
   </view>
 </view>
 
-<view class="cu-modal {{showModal?'show':''}}">
+<!-- 添加饮食记录模态框 -->
+<view class="cu-modal {{showAddDietModal?'show':''}}">
   <view class="cu-dialog">
     <view class="cu-bar bg-white justify-end">
-      <view class="content">提示</view>
-      <view class="action" bindtap="hideModal">
+      <view class="content">添加饮食记录</view>
+      <view class="action" bindtap="hideAddDietModal">
         <text class="cuIcon-close text-red"></text>
       </view>
     </view>
-    <view class="padding-xl text-center">
-      <text>欢迎使用 BearAI！</text>
+    <view class="padding">
+      <view class="cu-form-group">
+        <view class="title">餐次类型</view>
+        <picker 
+          mode="selector" 
+          range="{{mealTypes}}" 
+          value="{{selectedMealTypeIndex}}" 
+          bindchange="onMealTypeChange"
+        >
+          <view class="picker">
+            {{mealTypes[selectedMealTypeIndex]}}
+          </view>
+        </picker>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">食物名称</view>
+        <input 
+          placeholder="请输入食物名称" 
+          bindinput="onFoodNameInput"
+          value="{{newDietRecord.foodName}}"
+        ></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">热量(千卡)</view>
+        <input 
+          type="number" 
+          placeholder="请输入热量" 
+          bindinput="onCaloriesInput"
+          value="{{newDietRecord.calories}}"
+        ></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">蛋白质(克)</view>
+        <input 
+          type="number" 
+          placeholder="请输入蛋白质含量" 
+          bindinput="onProteinInput"
+          value="{{newDietRecord.protein}}"
+        ></input>
+      </view>
+      <button 
+        class="cu-btn block bg-blue margin-top" 
+        bindtap="confirmAddDietRecord"
+      >
+        确认添加
+      </button>
+    </view>
+  </view>
+</view>
+
+<!-- AI 聊天入口 -->
+<view 
+  class="ai-chat-button" 
+  bindtap="onAIChatClick"
+>
+  <image 
+    src="https://attach-sit.oss-cn-shanghai.aliyuncs.com/default/28a14b07da0d4e7684758a48649b5ad9.png?1=1" 
+    class="ai-avatar"
+  ></image>
+</view>
+
+<!-- AI 聊天模态框 -->
+<view class="cu-modal {{showAIChat?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">AI 助手</view>
+      <view class="action" bindtap="hideAIChat">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <scroll-view 
+      scroll-y 
+      class="chat-messages" 
+      scroll-with-animation 
+      scroll-into-view="msg-{{messages.length-1}}"
+    >
+      <block wx:for="{{messages}}" wx:key="index">
+        <view 
+          id="msg-{{index}}"
+          class="chat-message {{item.type === 'user' ? 'user-message' : 'ai-message'}}"
+        >
+          <image 
+            src="{{item.type === 'user' ? userInfo.avatarUrl : 'https://attach-sit.oss-cn-shanghai.aliyuncs.com/default/28a14b07da0d4e7684758a48649b5ad9.png?1=1'}}" 
+            class="chat-avatar"
+          ></image>
+          <view class="message-content">
+            <text class="message-text">{{item.content}}</text>
+            <view wx:if="{{item.fileUrl}}" class="message-file">
+              <image 
+                src="{{item.fileUrl}}" 
+                mode="aspectFill" 
+                class="message-image"
+              ></image>
+            </view>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+    <view class="cu-bar input">
+      <view class="input-group">
+        <view class="file-upload" bindtap="chooseFile">
+          <text class="cuIcon-upload"></text>
+        </view>
+        <input 
+          class="cu-input" 
+          placeholder="🐾 您想问小肉熊什么捏～" 
+          confirm-type="send"
+          bindinput="onInputChange"
+          bindconfirm="sendMessage"
+          value="{{inputMessage}}"
+        ></input>
+        <view class="send-btn" bindtap="sendMessage">
+          <text class="cuIcon-right"></text>
+        </view>
+      </view>
     </view>
   </view>
 </view>

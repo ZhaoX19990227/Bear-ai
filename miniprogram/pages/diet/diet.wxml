@@ -1,0 +1,100 @@
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-white" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' hover-class='none' bindtap='BackPage'>
+      <text class='icon-back'></text>
+    </navigator>
+    <view class="content">饮食记录</view>
+  </view>
+</view>
+
+<view class="container">
+  <!-- 今日饮食总览 -->
+  <view class="cu-card case-list">
+    <view class="cu-item shadow-blur">
+      <view class="content">
+        <view class="text-xl text-bold">今日摄入</view>
+        <view class="diet-summary">
+          <view class="summary-item">
+            <text class="cuIcon-fork"></text>
+            <text>热量：{{totalCalories}} 千卡</text>
+          </view>
+          <view class="summary-item">
+            <text class="cuIcon-activity"></text>
+            <text>蛋白质：{{totalProtein}} 克</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加饮食记录按钮 -->
+  <button class="cu-btn block bg-blue margin-top" bindtap="addDietRecord">
+    <text class="cuIcon-add"></text> 添加饮食记录
+  </button>
+
+  <!-- 饮食记录列表 -->
+  <view class="cu-list menu-card margin-top">
+    <block wx:for="{{dietRecords}}" wx:key="index">
+      <view class="cu-item">
+        <view class="content">
+          <view>
+            <text class="text-bold">{{item.name}}</text>
+            <text class="text-gray text-sm margin-left-xs">{{item.time}}</text>
+          </view>
+          <view class="text-gray text-sm">
+            热量：{{item.calories}} 千卡 | 蛋白质：{{item.protein}} 克
+          </view>
+        </view>
+        <view class="action">
+          <text class="cuIcon-close text-red" bindtap="deleteDietRecord" data-index="{{index}}"></text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+
+<!-- 添加饮食记录模态框 -->
+<view class="cu-modal {{showAddModal?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">添加饮食记录</view>
+      <view class="action" bindtap="hideAddModal">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding">
+      <view class="cu-form-group">
+        <view class="title">食物名称</view>
+        <input 
+          placeholder="请输入食物名称" 
+          bindinput="onNameInput"
+          value="{{newRecord.name}}"
+        ></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">热量(千卡)</view>
+        <input 
+          type="number" 
+          placeholder="请输入热量" 
+          bindinput="onCaloriesInput"
+          value="{{newRecord.calories}}"
+        ></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">蛋白质(克)</view>
+        <input 
+          type="number" 
+          placeholder="请输入蛋白质含量" 
+          bindinput="onProteinInput"
+          value="{{newRecord.protein}}"
+        ></input>
+      </view>
+      <button 
+        class="cu-btn block bg-blue margin-top" 
+        bindtap="confirmAddRecord"
+      >
+        确认添加
+      </button>
+    </view>
+  </view>
+</view> 

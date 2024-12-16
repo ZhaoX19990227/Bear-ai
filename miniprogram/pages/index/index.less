@@ -2,74 +2,458 @@
 @import "../../colorui/main.wxss";
 @import "../../colorui/icon.wxss";
 
+@bear-primary: #8B4513;      // 棕色，模仿熊的毛色
+@bear-secondary: #D2691E;    // 更亮的棕色
+@bear-background: #FFF8DC;   // 奶油色背景
+
 page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f5;
+  background-color: @bear-background;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   flex-grow: 1;
-  padding: 30rpx;
+  padding: 0 15rpx;
+  width: 100%;
 }
 
-.cu-card.case-list {
+// 轮播图样式
+.card-swiper {
   width: 100%;
-  margin: 30rpx 0;
+  height: 300rpx; // 减小高度
+}
+
+.card-swiper .swiper-item {
+  width: 100%;
+  height: 300px;
+  background-position: center;
+  background-size: cover;
+  position: relative;
   border-radius: 20rpx;
   overflow: hidden;
-  box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
 }
 
-.cu-card.case-list:hover {
-  transform: scale(1.02);
-  box-shadow: 0 15rpx 40rpx rgba(0,0,0,0.15);
+.card-swiper .swiper-title {
+  position: absolute;
+  bottom: 20rpx;
+  left: 20rpx;
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+  text-shadow: 0 2rpx 6rpx rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0.3);
+  padding: 5rpx 15rpx;
+  border-radius: 10rpx;
 }
 
-.cu-avatar.xl {
-  width: 160rpx;
-  height: 160rpx;
-  border: 4rpx solid white;
-}
-
-.cu-list.menu-avatar {
+// 文章推荐
+.article-section {
   width: 100%;
+  margin-bottom: 15rpx;
 }
 
-.cu-list.menu-avatar .cu-item {
-  background-color: white;
-  margin-bottom: 20rpx;
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  color: @bear-primary;
+  display: flex;
+  align-items: center;
+}
+
+.section-title::before {
+  content: '🐻';
+  margin-right: 10rpx;
+}
+
+.cu-list.menu-card .cu-item {
+  margin-bottom: 15rpx;
   border-radius: 15rpx;
+  background-color: white;
+  border: 2rpx solid rgba(139,69,19,0.1);
+  transition: all 0.3s ease;
+  padding: 15rpx; // 添加内边距以分离子元素
+  display: flex; // 使用弹性盒模型
+  align-items: stretch; // 子元素垂直方向上拉伸
+}
+
+.cu-list.menu-card .cu-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.cu-list.menu-card .cu-item .cu-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  background-size: cover;
+  background-position: center;
+  border: 4rpx solid @bear-secondary;
+  margin-right: 15rpx; // 给封面图添加右边距以分隔文本内容
+  flex-shrink: 0; // 确保封面图不缩小
+}
+.cu-list.menu-card .cu-item .content {
+  flex-grow: 1; // 让文本内容占据剩余空间
+}
+
+.cu-list.menu-card .cu-item .content .text-black {
+  font-size: 28rpx; // 调整标题字体大小
+  margin-bottom: 5rpx; // 标题与简介之间的间距
+}
+
+.cu-list.menu-card .cu-item .content .text-gray.text-sm {
+  font-size: 24rpx; // 调整简介字体大小
+}
+
+.cu-list.menu-card .cu-item .action {
+  margin-left: auto; // 将操作按钮推到最右侧
+  display: flex;
+  align-items: center; // 操作按钮垂直居中
+}
+
+// 今日饮食总览
+.diet-overview {
+  width: 100%;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 20rpx; // 控制底部间距
+  margin-top: 0; // 避免与轮播图有过大间隙
+}
+
+
+.diet-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: @bear-primary;
+  display: flex;
+  align-items: center;
+}
+
+.diet-title::before {
+  content: '🐾';
+  margin-right: 10rpx;
+}
+
+.diet-container {
+  width: 100%;
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-top: 0;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.diet-summary {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  background-color: @bear-background;
+  padding: 15rpx 25rpx;
+  border-radius: 15rpx;
+  border: 2rpx solid rgba(139,69,19,0.1);
+  position: relative;
+}
+
+.summary-item text {
+  margin-left: 10rpx;
+  color: @bear-primary;
+}
+
+.summary-item .cuIcon-fork::before,
+.summary-item .cuIcon-activity::before {
+  color: @bear-secondary;
+}
+// 修改今日饮食标题和加号按钮的容器
+.diet-title-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; // 标题靠左，加号按钮靠右
+  align-items: center;
+  margin-top: 0; // 去掉顶部的 margin
+  margin-bottom: 10rpx; // 添加与下面列表的间距
+  padding: 0 20rpx; // 给整体增加左右 padding，方便布局
+}
+
+.add-diet-btn {
+  background-color: @bear-secondary;
+  color: white;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto; // 自动推到最右侧
   transition: all 0.3s ease;
 }
 
-.cu-list.menu-avatar .cu-item:active {
-  background-color: #f0f0f0;
+.add-diet-btn:active {
   transform: scale(0.98);
 }
 
-.cu-modal {
-  z-index: 1024;
+.add-diet-btn .cuIcon-add::before {
+  color: white;
+  font-weight: bold;
+  font-size: 28rpx;
 }
 
-.animation-scale-up {
-  animation: scaleUp 0.5s ease-in-out;
+// AI 聊天模态框样式
+.chat-messages {
+  height: 600rpx;
+  padding: 20rpx;
+  background-color: #f5f5f5;
 }
 
-@keyframes scaleUp {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.chat-message {
+  display: flex;
+  margin-bottom: 20rpx;
+  align-items: flex-start;
+}
+
+.chat-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.message-content {
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-text {
+  padding: 15rpx;
+  border-radius: 10rpx;
+  background-color: white;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+}
+
+.message-file {
+  margin-top: 10rpx;
+}
+
+.message-image {
+  max-width: 200rpx;
+  max-height: 200rpx;
+  border-radius: 10rpx;
+}
+
+.user-message {
+  flex-direction: row-reverse;
+}
+
+.user-message .chat-avatar {
+  margin-right: 0;
+  margin-left: 15rpx;
+}
+
+.user-message .message-text {
+  background-color: #07C160;
+  color: white;
+}
+
+.cu-modal .cu-dialog {
+  width: 90%;
+  max-height: 80%;
+}
+
+.cu-bar.input {
+  padding: 20rpx;
+  background-color: white;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.file-upload {
+  margin-right: 15rpx;
+  color: #888;
+  font-size: 40rpx;
+}
+
+.cu-input {
+  flex-grow: 1;
+  margin-right: 15rpx;
+  background-color: #f5f5f5;
+  border-radius: 30rpx;
+  padding: 10rpx 20rpx;
+}
+
+.send-btn {
+  color: #07C160;
+  font-size: 40rpx;
+}
+
+// AI 聊天按钮
+.ai-chat-button {
+  position: fixed;
+  bottom: 60rpx;
+  right: 30rpx;
+  width: 120rpx; /* 放大 */
+  height: 120rpx; /* 放大 */
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 5rpx 20rpx rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  z-index: 1000; /* 确保按钮在其他内容之上 */
+}
+.ai-chat-button::before {
+  content: '';
+  position: absolute;
+  top: -10rpx;
+  left: -10rpx;
+  right: -10rpx;
+  bottom: -10rpx;
+  background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffd6a5, #fdffb6, #caffbf, #9bf6ff, #a0c4ff, #bdb2ff, #ffc6ff, #ff9a9e);
+  background-size: 400% 400%;
+  border-radius: 50%;
+  filter: blur(10rpx);
+  opacity: 0.7;
+  animation: gradient-flow 8s ease infinite;
+  z-index: -1;
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+.ai-chat-button:active {
+  transform: scale(0.95);
+}
+
+.ai-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+}
+
+// 添加熊爪装饰
+.container::after {
+  content: '🐾';
+  position: fixed;
+  bottom: 50rpx;
+  left: 30rpx;
+  font-size: 50rpx;
+  opacity: 0.3;
+}
+
+.container::before {
+  content: '🐻';
+  position: fixed;
+  top: 50rpx;
+  right: 30rpx;
+  font-size: 50rpx;
+  opacity: 0.3;
+}
+
+.diet-records-list {
+  width: 100%;
+  max-height: 400rpx;
+  margin-top: 0;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.diet-records-title {
+  font-size: 28rpx;
+  color: @bear-primary;
+  margin-bottom: 15rpx;
+  font-weight: bold;
+}
+
+.diet-record {
+  display: flex;
+  flex-direction: column;
+  background-color: @bear-background;
+  border-radius: 15rpx;
+  padding: 15rpx;
+  margin-bottom: 10rpx;
+  border: 2rpx solid rgba(139,69,19,0.1);
+}
+
+.diet-record-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.diet-record-type {
+  font-weight: bold;
+  color: @bear-secondary;
+}
+
+.diet-record-time {
+  color: #888;
+  font-size: 24rpx;
+}
+
+.diet-record-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.diet-record-name {
+  font-size: 28rpx;
+  margin-bottom: 5rpx;
+}
+
+.diet-record-details {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 24rpx;
+}
+
+.diet-meal-group {
+  margin-bottom: 20rpx;
+  background-color: white;
+  border-radius: 15rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.05);
+}
+
+.diet-meal-type {
+  background-color: @bear-background;
+  color: @bear-primary;
+  font-weight: bold;
+  padding: 10rpx 15rpx;
+  font-size: 28rpx;
+  border-bottom: 2rpx solid rgba(139,69,19,0.1);
+}
+
+.diet-record {
+  background-color: white;
+  border-bottom: 2rpx solid rgba(139,69,19,0.05);
+}
+
+.diet-record:last-child {
+  border-bottom: none;
 }
