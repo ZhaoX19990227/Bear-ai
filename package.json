@@ -2,12 +2,15 @@
   "name": "miniprogram-ts-less-quickstart",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "",
   "dependencies": {
+    "@nestjs/jwt": "^10.2.0",
+    "@types/passport-jwt": "^4.0.1",
+    "openai": "^4.76.3",
+    "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
     "miniprogram-api-typings": "^2.8.3-1"

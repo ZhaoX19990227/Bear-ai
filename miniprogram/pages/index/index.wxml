@@ -1,28 +1,64 @@
 <!--index.wxml-->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
+<navigation-bar title="BearAI" back="{{false}}" color="white" background="linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)"></navigation-bar>
+
+<view class="container">
+  <view class="cu-card case-list">
+    <view class="cu-item shadow-blur animation-scale-up">
+      <view class="cu-avatar xl round" style="background-image:url('{{userInfo.avatarUrl}}');">
+        <view class="cu-tag badge cu-tag-top-right bg-red" wx:if="{{!hasUserInfo}}">未登录</view>
+      </view>
+      <view class="content">
+        <view class="text-cut">
+          <block wx:if="{{!hasUserInfo}}">
+            <button class="cu-btn round bg-blue" bindtap="getUserProfile">
+              <text class="cuIcon-people"></text> 登录
+            </button>
+          </block>
+          <block wx:else>
+            <text class="text-bold text-xl">{{userInfo.nickName}}</text>
+          </block>
         </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
-    </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+        <view class="text-gray text-sm flex">
+          <text class="text-cut">{{motto}}</text>
+        </view>
+      </view>
     </view>
   </view>
-</scroll-view>
+
+  <view class="cu-list menu-avatar">
+    <view class="cu-item" bindtap="onFeatureClick">
+      <view class="cu-avatar bg-green cuIcon-explore"></view>
+      <view class="content">
+        <view class="text-black">探索功能</view>
+        <view class="text-gray text-sm">发现 BearAI 的神奇能力</view>
+      </view>
+      <view class="action">
+        <view class="cuIcon-right text-gray"></view>
+      </view>
+    </view>
+    <view class="cu-item" bindtap="onSettingsClick">
+      <view class="cu-avatar bg-blue cuIcon-settings"></view>
+      <view class="content">
+        <view class="text-black">系统设置</view>
+        <view class="text-gray text-sm">个性化您的 BearAI 体验</view>
+      </view>
+      <view class="action">
+        <view class="cuIcon-right text-gray"></view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="cu-modal {{showModal?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">提示</view>
+      <view class="action" bindtap="hideModal">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-xl text-center">
+      <text>欢迎使用 BearAI！</text>
+    </view>
+  </view>
+</view>
