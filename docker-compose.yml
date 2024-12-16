@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bearai-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: bearai2024
+      MYSQL_DATABASE: bearai_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: bearai-redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: bearai-backend
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://root:bearai2024@mysql:3306/bearai_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+volumes:
+  mysql_data: 
