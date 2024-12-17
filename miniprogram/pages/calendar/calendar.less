@@ -145,6 +145,7 @@
   transition: all 0.3s ease;
   z-index: 1000; /* 确保按钮在其他内容之上 */
 }
+
 .ai-chat-button::before {
   content: '';
   position: absolute;
@@ -160,6 +161,7 @@
   animation: gradient-flow 8s ease infinite;
   z-index: -1;
 }
+
 @keyframes gradient-flow {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -174,4 +176,90 @@
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
+}
+
+/* AI 聊天模态框样式 */
+.chat-messages {
+  max-height: 800rpx;
+  padding: 20rpx;
+  background-color: #f5f5f5;
+}
+
+.chat-message {
+  display: flex;
+  margin-bottom: 20rpx;
+  align-items: flex-start;
+
+  .chat-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    margin-right: 20rpx;
+  }
+
+  .message-content {
+    max-width: 70%;
+    background-color: white;
+    padding: 15rpx 25rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+  }
+
+  &.user-message {
+    flex-direction: row-reverse;
+
+    .chat-avatar {
+      margin-right: 0;
+      margin-left: 20rpx;
+    }
+
+    .message-content {
+      background-color: #95ec69;
+      text-align: right;
+    }
+  }
+
+  &.ai-message {
+    .message-content {
+      background-color: white;
+    }
+  }
+
+  .message-file {
+    margin-top: 10rpx;
+    
+    .message-image {
+      max-width: 200rpx;
+      max-height: 200rpx;
+      border-radius: 10rpx;
+    }
+  }
+}
+
+.cu-bar.input {
+  background-color: white;
+  padding: 20rpx;
+
+  .input-group {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 50rpx;
+    padding: 0 20rpx;
+
+    .file-upload {
+      margin-right: 20rpx;
+      color: #888;
+    }
+
+    .cu-input {
+      flex-grow: 1;
+      padding: 10rpx 0;
+    }
+
+    .send-btn {
+      margin-left: 20rpx;
+      color: #07c160;
+    }
+  }
 }

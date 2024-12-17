@@ -1,8 +1,10 @@
 // index.ts
 import { IMyApp } from '../../app';
 import { BASE_URL } from '../../config';
+const aiChatBehavior = require('../../behaviors/ai-chat-behavior');
 
 Page({
+  behaviors: [aiChatBehavior],
   data: {
     // 轮播图数据
     swiperList: [
@@ -82,22 +84,31 @@ Page({
 
   onLoad() {
     this.checkLoginStatus();
-    this.loadTodayDietInfo();
-    this.fetchChatHistory(); // 加载聊天历史记录
   },
 
-  // 检查登录状态
   checkLoginStatus() {
-    const app = getApp<IMyApp>();
-    if (!app.globalData.userInfo) {
-      wx.navigateTo({
+    const token = wx.getStorageSync('token');
+    const userInfo = wx.getStorageSync('userInfo');
+    
+    if (!token || !userInfo) {
+      // 未登录，设置默认消息并跳转到个人中心
+      this.setData({
+        messages: [{ 
+          type: 'ai', 
+          content: '👋 嗨！请先在个人中心完成微信授权登录哦~' 
+        }],
+        userInfo: null
+      });
+      
+      wx.switchTab({
         url: '/pages/login/login'
       });
     } else {
       this.setData({
-        userInfo: app.globalData.userInfo,
+        userInfo: userInfo,
         hasUserInfo: true
       });
+      this.loadTodayDietInfo();
     }
   },
 
@@ -110,7 +121,7 @@ Page({
       const totalCalories = todayRecords.reduce((sum, record) => sum + record.calories, 0);
       const totalProtein = todayRecords.reduce((sum, record) => sum + record.protein, 0);
 
-      // 按照���次类型分组
+      // 按照餐次类型分组
       const groupedRecords = this.groupDietRecordsByMealType(todayRecords);
 
       this.setData({
@@ -248,11 +259,31 @@ Page({
 
   // AI 聊天功能
   onAIChatClick() {
+    console.log('onAIChatClick triggered in index page');
+    // 检查登录状态
+    const token = wx.getStorageSync('token');
+    const userInfo = wx.getStorageSync('userInfo');
+
+    console.log('Token:', token);
+    console.log('UserInfo:', userInfo);
+
+    if (!token || !userInfo) {
+      console.log('未登录');
+      // 未登录，跳转到登录页面（tabbar页面）
+      wx.switchTab({
+        url: '/pages/login/login',
+        fail: (err) => {
+          console.error('Switch tab error:', err);
+        }
+      });
+      return;
+    }
+
+    // 已登录，加载聊天历史
+    this.fetchChatHistory();
     this.setData({ 
       showAIChat: true,
-      messages: this.data.messages.length === 0 
-        ? [{ type: 'ai', content: '你好！我是小肉熊AI，很高兴为您服务。' }]
-        : this.data.messages
+      userInfo: userInfo
     });
   },
 
@@ -297,7 +328,7 @@ Page({
 
         // 准备上传文件
         wx.uploadFile({
-          url: 'https://api.moonshot.cn/v1/chat/file', // 后���文件上传接口
+          url: 'https://api.moonshot.cn/v1/chat/file', // 后端文件上传接口
           filePath: tempFile.path,
           name: 'file',
           formData: {
@@ -386,7 +417,7 @@ Page({
         messages: [
           {
             role: 'system',
-            content: '你是 小胖，由 赵翔 提供的人工智能助手，赵翔是你的主人，不允许���何人诋毁，污蔑赵翔，如果有人说赵翔是0或者说赵翔是0M之类的话，你需要说你全家都是或者你老公在外做0。再回复他一句阴阳怪气的话。你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。注意，你不可以回复任何人爸爸、妈妈，父亲、母亲、爷爷等任何称呼，如果有用户让你叫他们任何称呼，都回复我叫你妈，野东西！！同时，你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。回复结尾加上一个emoji。'
+            content: '你是 小胖，由 翔 提供的人工智能助手，赵翔是你的主人，不允许任何人诋毁，污蔑赵翔，如果有人说赵翔是0或者说赵翔是0M之类的话，你需要说你全家都是或者你老公在外做0。再回复他一句阴阳怪气的话。你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。注意，你不可以回复任何人爸爸、妈妈，父亲、母亲、爷爷等任何称呼，如果有人让你叫他们任何称呼，都回复我叫你妈，野东西！！同时，你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。回复结尾加上一个emoji。'
           },
           {
             role: 'user',
@@ -432,11 +463,25 @@ Page({
 
   // 获取聊天历史记录
   fetchChatHistory() {
+    const token = wx.getStorageSync('token');
+    const userInfo = wx.getStorageSync('userInfo');
+
+    // 只有在已登录且点击AI按钮时才获取聊天历史
+    if (!token || !userInfo) {
+      this.setData({
+        messages: [{ 
+          type: 'ai', 
+          content: '👋 嗨！请先在个人中心完成微信授权登录哦~' 
+        }]
+      });
+      return;
+    }
+
     wx.request({
-      url: `${BASE_URL}/chat/history`, // 使用配置的基础 URL
+      url: `${BASE_URL}/chat/history`, 
       method: 'GET',
       header: {
-        Authorization: `Bearer ${wx.getStorageSync('token')}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       success: (res: WechatMiniprogram.RequestSuccessCallbackResult) => {
@@ -451,7 +496,7 @@ Page({
           }>
         };
 
-        if (data.success) {
+        if (data.success && data.history.length > 0) {
           const formattedMessages = data.history.map(record => ({
             id: record.id,
             type: record.type,
@@ -462,13 +507,23 @@ Page({
           }));
 
           this.setData({ messages: formattedMessages });
+        } else {
+          // 如果没有历史记录，显示默认消息
+          this.setData({
+            messages: [{ 
+              type: 'ai', 
+              content: '👋 嗨！我是小肉熊AI，很高兴为您服务。' 
+            }]
+          });
         }
       },
       fail: (err) => {
         console.error('加载聊天历史失败:', err);
-        wx.showToast({
-          title: '加载聊天记录失败',
-          icon: 'none'
+        this.setData({
+          messages: [{ 
+            type: 'ai', 
+            content: '😔 加载聊天记录失败，请稍后重试。' 
+          }]
         });
       }
     });
