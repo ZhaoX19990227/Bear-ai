@@ -128,14 +128,14 @@
       placeholder="食物名称" 
       value="{{foodName}}" 
       bindinput="onFoodNameInput"
-      style="flex: 1; margin-right: 5rpx;"
+      style="flex: 1; margin-right: 5rpx; height: 60rpx;"
     />
     <input 
       type="number" 
       placeholder="食物重量 (g)" 
       value="{{newDietRecord.weight}}" 
       bindinput="onFoodWeightInput"
-      style="flex: 1;"
+      style="flex: 1; height: 60rpx;"
     />
   </view>
   <button 

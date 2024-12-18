@@ -1,9 +1,9 @@
 @import "../../../colorui/main.wxss";
 @import "../../../colorui/icon.wxss";
 
-@bear-primary: #8B4513;      // 棕色，模仿熊的毛色
-@bear-secondary: #D2691E;    // 更亮的棕色
-@bear-background: #FFF8DC;   // 奶油色背景
+@bear-primary: #8b4513; // 棕色，模仿熊的毛色
+@bear-secondary: #d2691e; // 更亮的棕色
+@bear-background: #fff8dc; // 奶油色背景
 
 .page {
   padding: 20rpx;
@@ -15,11 +15,12 @@
   display: flex;
   flex-direction: row;
   margin-bottom: 20rpx;
+  margin-top: 10rpx;
 }
 
 .search-input {
   flex: 1;
-  height: 80rpx;
+  height: 100rpx;
   padding: 0 20rpx;
   border: 2rpx solid @bear-primary;
   border-radius: 40rpx;
@@ -29,7 +30,9 @@
 
 .search-button {
   margin-left: 10rpx;
+  margin-top: 10rpx;
   height: 80rpx;
+  width: 10rpx;
   padding: 0 30rpx;
   line-height: 80rpx;
   border: none;
@@ -65,7 +68,8 @@
   line-height: 1.5;
 }
 
-.loading, .error, .no-results {
+.error,
+.no-results {
   text-align: center;
   color: @bear-secondary;
   margin-top: 50rpx;
@@ -74,4 +78,48 @@
 
 .no-results {
   color: #888;
-} 
+}
+
+/* 加载指示器遮罩 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8); /* 半透明背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 确保它位于所有其他内容之上 */
+}
+
+/* 加载指示器容器 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 单个小熊的样式 */
+.loading-bear {
+  font-size: 48rpx; /* 设置适当大小 */
+  margin: 0 10rpx; /* 小熊之间的间距 */
+  animation: rotate-around-center 2s linear infinite;
+}
+
+/* 动画定义 - 绕中心旋转 */
+@keyframes rotate-around-center {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 给每个小熊不同的延迟，以创造连续旋转的效果 */
+.loading-bear:nth-child(1) { animation-delay: 0s; }
+.loading-bear:nth-child(2) { animation-delay: 0.5s; }
+.loading-bear:nth-child(3) { animation-delay: 1s; }
+.loading-bear:nth-child(4) { animation-delay: 1.5s; }

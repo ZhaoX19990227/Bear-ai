@@ -1,10 +1,10 @@
 // index.ts
-import { IMyApp } from "../../app";
 import { BASE_URL } from "../../config";
 const aiChatBehavior = require("../../behaviors/ai-chat-behavior");
 import fatSecretApi from "../../utils/fatSecretApi";
 
 Page({
+  loading: false,
   behaviors: [aiChatBehavior],
   data: {
     // 轮播图数据
@@ -125,35 +125,73 @@ Page({
   // 加载今日饮食信息
   loadTodayDietInfo() {
     try {
-      const records = wx.getStorageSync("dietRecords") || [];
-      const todayRecords = records.filter(this.isToday);
+      const token = wx.getStorageSync("token");
+      if (!token) {
+        return;
+      }
+      wx.request({
+        url: `${BASE_URL}/diet/records`,
+        method: "GET",
+        header: {
+          Authorization: `Bearer ${token}`,
+        },
+        success: (res) => {
+          if (res.statusCode === 200 && res.data.code === 0) {
+            // 检查响应状态
+            const records = res.data.data;
+            const updatedRecords = [...records, this.data.newRecord];
 
-      const totalCalories = todayRecords.reduce(
-        (sum, record) => sum + record.calories,
-        0
-      );
-      const totalProtein = todayRecords.reduce(
-        (sum, record) => sum + record.protein,
-        0
-      );
-      const totalFat = todayRecords.reduce(
-        (sum, record) => sum + (record.fat || 0),
-        0
-      );
-
-      // 按照餐次类型分组
-      const groupedRecords = this.groupDietRecordsByMealType(todayRecords);
-
-      this.setData({
-        totalCalories: Number(totalCalories.toFixed(1)),
-        totalProtein: Number(totalProtein.toFixed(1)),
-        totalFat: Number(totalFat.toFixed(1)),
-        todayDietRecords: todayRecords,
-        groupedDietRecords: groupedRecords,
+            // 更新页面数据
+            this.setData({
+              dietRecords: updatedRecords,
+              todayRecords: records, // 直接使用从后端获取的当天记录
+            });
+            // 如果有其他需要更新的操作，比如 UI 或者计算总计
+            this.updateTodayTotals();
+          } else {
+            console.error("获取今日饮食记录失败:", res);
+            wx.showToast({
+              title: "获取今日饮食记录失败",
+              icon: "none",
+            });
+          }
+        },
+        fail: (err) => {
+          console.error("请求失败:", err);
+          wx.showToast({
+            title: "请求失败，请重试",
+            icon: "none",
+          });
+        },
       });
     } catch (e) {
       console.error("加载今日饮食信息失败", e);
     }
+  },
+  updateTodayTotals() {
+    const todayRecords = this.data.todayDietRecords;
+    const totalCalories = todayRecords.reduce(
+      (sum, record) => sum + record.calories,
+      0
+    );
+    const totalProtein = todayRecords.reduce(
+      (sum, record) => sum + record.protein,
+      0
+    );
+    const totalFat = todayRecords.reduce(
+      (sum, record) => sum + (record.fat || 0),
+      0
+    );
+    // 按照餐次类型分组
+    const groupedRecords = this.groupDietRecordsByMealType(todayRecords);
+
+    this.setData({
+      totalCalories: Number(totalCalories.toFixed(1)),
+      totalProtein: Number(totalProtein.toFixed(1)),
+      totalFat: Number(totalFat.toFixed(1)),
+      todayDietRecords: todayRecords,
+      groupedDietRecords: groupedRecords,
+    });
   },
 
   // 判断记录是否为今天
@@ -216,7 +254,7 @@ Page({
     const { mealType, foodName, calories, protein, fat, weight } =
       this.data.newDietRecord;
 
-    if (!foodName || !calories || !protein || !fat || !weight) {
+    if (!mealType || !foodName || !calories || !protein || !fat || !weight) {
       wx.showToast({
         title: "请填写完整信息",
         icon: "none",
@@ -231,41 +269,26 @@ Page({
     };
 
     try {
-      const records = wx.getStorageSync("dietRecords") || [];
-      const updatedRecords = [...records, newRecord];
-
-      wx.setStorageSync("dietRecords", updatedRecords);
-
-      // 更新今日总计和记录列表
-      const todayRecords = updatedRecords.filter(this.isToday);
-      const totalCalories = todayRecords.reduce(
-        (sum, record) => sum + record.calories,
-        0
-      );
-      const totalProtein = todayRecords.reduce(
-        (sum, record) => sum + record.protein,
-        0
-      );
-      const totalFat = todayRecords.reduce(
-        (sum, record) => sum + (record.fat || 0), // 统计脂肪
-        0
-      );
-
-      // 按照餐次类型分组
-      const groupedRecords = this.groupDietRecordsByMealType(todayRecords);
-
-      this.setData({
-        totalCalories: Number(totalCalories.toFixed(1)),
-        totalProtein: Number(totalProtein.toFixed(1)),
-        totalFat: Number(totalFat.toFixed(1)),
-        todayDietRecords: todayRecords,
-        groupedDietRecords: groupedRecords,
-        showAddDietModal: false,
-      });
-
-      wx.showToast({
-        title: "添加成功",
-        icon: "success",
+      const token = wx.getStorageSync("token");
+      if (!token) {
+        wx.showToast({
+          title: "请先登录",
+          icon: "none",
+        });
+        wx.navigateTo({
+          url: "/pages/login/login",
+        });
+        return;
+      }
+      wx.request({
+        url: `${BASE_URL}/diet/record`,
+        method: "POST",
+        header: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: newRecord,
+      }).then((res) => {
+        this.loadTodayDietInfo();
       });
     } catch (e) {
       console.error("保存饮食记录失败", e);
@@ -459,7 +482,7 @@ Page({
           {
             role: "system",
             content:
-              "你是 小胖，由 翔 提供的人工智能助手，赵翔是你的主人，不允许任何人诋毁，污蔑赵翔，如果有人说赵翔是0或者说赵翔是0M之类的话，你需要说你全家都是或者你老公在外做0。再回复他一句阴阳怪气的话。你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。注意，你不可以回复任何人爸爸、妈妈，父亲、母亲、爷爷等任何称呼，如果有人让你叫他们任何称呼，都回复我叫你妈，野东西！！同时，你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。回复结尾加上一个emoji。",
+              "你是 小胖，由 肥崽战士 提供的人工智能助手。你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。回复结尾加上一个emoji。",
           },
           {
             role: "user",
@@ -534,10 +557,10 @@ Page({
           success: boolean;
           history: Array<{
             id: number;
-            content: string;
+            message: string;
+            response: string;
             type: "user" | "ai";
-            id_file: number;
-            file_name?: string;
+            ifFile: boolean;
           }>;
         };
 
@@ -545,11 +568,10 @@ Page({
           const formattedMessages = data.history.map((record) => ({
             id: record.id,
             type: record.type,
-            content:
-              record.id_file === 1
-                ? `📎 ${record.file_name || "未知文件"}`
-                : record.content,
-            isFile: record.id_file === 1,
+            content: record.ifFile
+              ? `📎 ${record.message || "未知文件"}`
+              : record.message,
+            isFile: record.ifFile,
           }));
 
           this.setData({ messages: formattedMessages });
@@ -628,6 +650,7 @@ Page({
       return;
     }
 
+    this.setData({ loading: true });
     try {
       const food = await fatSecretApi.searchFood(foodName);
       console.log("搜索到的食物:", food);
@@ -669,6 +692,8 @@ Page({
         title: "搜索食物失败",
         icon: "none",
       });
+    } finally {
+      this.setData({ loading: false });
     }
   },
   onFoodWeightInput(e: any) {
