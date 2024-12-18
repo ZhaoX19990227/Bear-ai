@@ -36,16 +36,19 @@
   </view>
     <!-- 今日饮食总览 -->
     <view class="diet-summary">
-      <view class="summary-item">
-        <text class="cuIcon-fork"></text>
-        <text>热量：{{totalCalories}} 千卡</text>
+        <view class="summary-item">
+        <text class="label">热量</text>
+        <text class="value">{{totalCalories}} 千卡</text>
       </view>
       <view class="summary-item">
-        <text class="cuIcon-activity"></text>
-        <text>蛋白质：{{totalProtein}} 克</text>
-        
+        <text class="label">蛋白质</text>
+        <text class="value">{{totalProtein}} 克</text>
       </view>
-    </view>
+      <view class="summary-item">
+        <text class="label">脂肪</text>
+        <text class="value">{{totalFat}} 克</text>
+      </view>
+    </view> 
 
     <!-- 今日饮食记录列表 -->
     <scroll-view 
@@ -103,6 +106,7 @@
       </view>
     </view>
     <view class="padding">
+      <!-- 餐次类型选择 -->
       <view class="cu-form-group">
         <view class="title">餐次类型</view>
         <picker 
@@ -116,16 +120,35 @@
           </view>
         </picker>
       </view>
+      
+      <!-- 食物名称输入 -->
+     <view class="input-container">
+    <input 
+      type="text" 
+      placeholder="食物名称" 
+      value="{{foodName}}" 
+      bindinput="onFoodNameInput"
+      style="flex: 1; margin-right: 5rpx;"
+    />
+    <input 
+      type="number" 
+      placeholder="食物重量 (g)" 
+      value="{{newDietRecord.weight}}" 
+      bindinput="onFoodWeightInput"
+      style="flex: 1;"
+    />
+  </view>
+  <button 
+    class="search-food-btn" 
+    disabled="{{isButtonDisabled}}"
+    bindtap="searchFoodByName"
+  >
+    <text class="cuIcon-search"></text>
+  </button>
+      
+      <!-- 热量 -->
       <view class="cu-form-group">
-        <view class="title">食物名称</view>
-        <input 
-          placeholder="请输入食物名称" 
-          bindinput="onFoodNameInput"
-          value="{{newDietRecord.foodName}}"
-        ></input>
-      </view>
-      <view class="cu-form-group">
-        <view class="title">热量(千卡)</view>
+        <view class="title">热量 (千卡{{weightUnit}})</view>
         <input 
           type="number" 
           placeholder="请输入热量" 
@@ -133,8 +156,10 @@
           value="{{newDietRecord.calories}}"
         ></input>
       </view>
+      
+      <!-- 蛋白质 -->
       <view class="cu-form-group">
-        <view class="title">蛋白质(克)</view>
+        <view class="title">蛋白质 (克{{weightUnit}})</view>
         <input 
           type="number" 
           placeholder="请输入蛋白质含量" 
@@ -142,6 +167,19 @@
           value="{{newDietRecord.protein}}"
         ></input>
       </view>
+      
+      <!-- 脂肪 -->
+      <view class="cu-form-group">
+        <view class="title">脂肪 (克{{weightUnit}})</view>
+        <input 
+          type="number" 
+          placeholder="请输入脂肪含量" 
+          bindinput="onFatInput"
+          value="{{newDietRecord.fat}}"
+        ></input>
+      </view>
+      
+      <!-- 确认按钮 -->
       <button 
         class="cu-btn block bg-blue margin-top" 
         bindtap="confirmAddDietRecord"

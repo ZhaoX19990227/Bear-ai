@@ -16,28 +16,41 @@ module.exports = {
 <view class="container">
   <view class="login-wrapper">
     <image 
-      src="{{ utils.aiAvatar }}" 
-      mode="aspectFill" 
-      class="avatar"
+      class="avatar" 
+      src="{{utils.aiAvatar}}"
+      mode="aspectFill"
     ></image>
     
-    <view class="title">小肉熊AI</view>
-    <view class="subtitle">智能健康Ai助手</view>
-    
+    <view class="title">小肉熊健康助手</view>
+    <view class="subtitle">专注于您的健康管理</view>
+
     <button 
       class="login-btn" 
-      bindtap="onGetUserInfo"
+      open-type="getUserProfile" 
+      bindgetuserinfo="getUserInfo"
+      bindtap="getUserProfile"
     >
-      <text class="cuIcon-weixin margin-right-xs"></text>
-      微信快速登录
+      <image 
+        class="weixin-icon" 
+        src="{{utils.aiAvatar}}"
+      ></image>
+      微信一键登录
     </button>
-    
+
     <view class="agreement">
-      登录即代表您同意
-      <text class="agreement-link">《用户协议》</text>
-      和
-      <text class="agreement-link">《隐私政策》</text>
+      登录即表示同意
+      <text class="agreement-link">用户协议</text>和
+      <text class="agreement-link">隐私政策</text>
     </view>
+  </view>
+
+  <view class="contact-section">
+    <button 
+      class="cu-btn block bg-brown margin-top" 
+      bindtap="contactAuthor"
+    >
+      联系作者
+    </button>
   </view>
 </view> 
 

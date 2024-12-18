@@ -1,0 +1,77 @@
+@import "../../../colorui/main.wxss";
+@import "../../../colorui/icon.wxss";
+
+@bear-primary: #8B4513;      // 棕色，模仿熊的毛色
+@bear-secondary: #D2691E;    // 更亮的棕色
+@bear-background: #FFF8DC;   // 奶油色背景
+
+.page {
+  padding: 20rpx;
+  background-color: @bear-background;
+  min-height: 100vh;
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 80rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid @bear-primary;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  background-color: white;
+}
+
+.search-button {
+  margin-left: 10rpx;
+  height: 80rpx;
+  padding: 0 30rpx;
+  line-height: 80rpx;
+  border: none;
+  border-radius: 40rpx;
+  background-color: @bear-primary;
+  color: white;
+  font-size: 28rpx;
+}
+
+.food-list {
+  max-height: 800rpx;
+}
+
+.food-item {
+  margin-bottom: 15rpx;
+  padding: 20rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.1);
+  border: 2rpx solid rgba(139, 69, 19, 0.1);
+}
+
+.food-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: @bear-primary;
+  margin-bottom: 10rpx;
+}
+
+.food-description {
+  font-size: 26rpx;
+  color: @bear-secondary;
+  line-height: 1.5;
+}
+
+.loading, .error, .no-results {
+  text-align: center;
+  color: @bear-secondary;
+  margin-top: 50rpx;
+  font-size: 28rpx;
+}
+
+.no-results {
+  color: #888;
+} 

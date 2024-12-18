@@ -156,39 +156,76 @@ page {
 
 .diet-summary {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;  /* 使用 evenly 使项间距均匀 */
   align-items: center;
-  margin-bottom: 15rpx;
+  margin-bottom: 20rpx;  /* 增加底部间距，避免与下方元素重叠 */
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.input-container input {
+  flex: 1;
+  padding: 10rpx;
+  border: 1rpx solid #ccc;
+  border-radius: 5rpx;
+  font-size: 28rpx;
+  width: calc(50% - 5rpx); /* 确保两个输入框并排显示 */
+}
+
+.search-food-btn {
+  margin-left: 10rpx;
+  background-color: @bear-secondary;
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 12rpx 30rpx;
+  font-size: 28rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: inline-block;
 }
 
 .summary-item {
   display: flex;
   align-items: center;
   background-color: @bear-background;
-  padding: 15rpx 25rpx;
+  padding: 12rpx 18rpx;  /* 调整内边距以平衡内容 */
   border-radius: 15rpx;
   border: 2rpx solid rgba(139,69,19,0.1);
   position: relative;
+  min-width: 160rpx;  /* 为每个项设置最小宽度，避免变形 */
+  max-width: 220rpx;  /* 限制最大宽度，确保在屏幕上合理显示 */
 }
 
 .summary-item text {
-  margin-left: 10rpx;
+  margin-left: 8rpx;  /* 减小文字与图标之间的间隙 */
   color: @bear-primary;
+  font-size: 28rpx;  /* 调整文字大小使其更统一 */
 }
 
 .summary-item .cuIcon-fork::before,
 .summary-item .cuIcon-activity::before {
   color: @bear-secondary;
+  font-size: 36rpx;  /* 图标大小调整，确保与文字匹配 */
 }
 // 修改今日饮食标题和加号按钮的容器
 .diet-title-container {
   width: 100%;
   display: flex;
-  justify-content: space-between; // 标题靠左，加号按钮靠右
+  justify-content: space-between;
   align-items: center;
-  margin-top: 0; // 去掉顶部的 margin
-  margin-bottom: 10rpx; // 添加与下面列表的间距
-  padding: 0 20rpx; // 给整体增加左右 padding，方便布局
+  margin-bottom: 15rpx;  /* 添加与下方内容的间隔 */
+  padding: 0 15rpx;  /* 添加左右内边距 */
 }
 
 .add-diet-btn {
