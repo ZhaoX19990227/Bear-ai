@@ -139,7 +139,7 @@
     />
   </view>
   <button 
-    class="search-food-btn" 
+    class="search-food-btn bg-brown block " 
     disabled="{{isButtonDisabled}}"
     bindtap="searchFoodByName"
   >
@@ -181,13 +181,15 @@
       
       <!-- 确认按钮 -->
       <button 
-        class="cu-btn block bg-blue margin-top" 
+        class="cu-btn block bg-brown margin-top" 
         bindtap="confirmAddDietRecord"
       >
         确认添加
       </button>
+      <text class="data-source">🐻 数据来源：fatsecret</text>
     </view>
   </view>
+  
 </view>
 
 
