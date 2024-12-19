@@ -17,20 +17,20 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "images/wechat-icon.png",
-        "selectedIconPath": "images/wechat-icon.png"
+        "iconPath": "images/homepage.png",
+        "selectedIconPath": "images/homepage.png"
       },
       {
         "pagePath": "pages/calendar/calendar",
         "text": "日历",
-        "iconPath": "images/wechat-icon.png",
-        "selectedIconPath": "images/wechat-icon.png"
+        "iconPath": "images/day.png",
+        "selectedIconPath": "images/day.png"
       },
       {
         "pagePath": "pages/login/login",
         "text": "个人中心",
-        "iconPath": "images/wechat-icon.png",
-        "selectedIconPath": "images/wechat-icon.png"
+        "iconPath": "images/my.png",
+        "selectedIconPath": "images/my.png"
       }
     ]
   },

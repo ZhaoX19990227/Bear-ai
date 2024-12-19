@@ -48,8 +48,7 @@ Page({
         wx.login({
           success: (loginRes) => {
             wx.request({
-              // url: `${BASE_URL}/auth/login`,
-              url: `https://6268-49-73-53-154.ngrok-free.app/api/auth/login`,
+              url: `${BASE_URL}/auth/login`,
               method: "POST",
               data: {
                 code: loginRes.code,
@@ -124,7 +123,7 @@ Page({
       success: (res) => {
         if (res.confirm) {
           wx.setClipboardData({
-            data: "zhaoxiang_ai",
+            data: "ZhaoX19990227",
             success: () => {
               wx.showToast({
                 title: "微信号已复制",
@@ -136,13 +135,6 @@ Page({
       },
     });
   },
-
-  openAiAssistant() {
-    wx.navigateTo({
-      url: "/pages/ai-chat/ai-chat",
-    });
-  },
-
   BackPage() {
     wx.navigateBack();
   },

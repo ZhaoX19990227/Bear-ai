@@ -6,7 +6,7 @@ module.exports = {
 </wxs>
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-white" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-white">
     <navigator class='action' hover-class='none' bindtap='BackPage' wx:if="{{canBack}}">
       <text class='icon-back'></text>
     </navigator>

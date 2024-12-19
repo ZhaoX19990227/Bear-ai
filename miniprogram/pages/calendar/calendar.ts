@@ -15,7 +15,61 @@ Page({
   },
   onLoad() {
     this.checkLoginStatus();
+    this.initCalendar();
   },
+  initCalendar() {
+    // 获取当前日期并高亮
+    const today = new Date();
+    this.setData({
+      daysColor: [
+        {
+          month: today.getMonth() + 1,
+          day: today.getDate(),
+          color: "white",
+          background: "#2575fc",
+        },
+      ],
+    });
+  },
+  onDateChange(e) {
+    console.log("日期变化:", e.detail);
+    this.setData({
+      selectedDate: e.detail.currentDate,
+    });
+    this.fetchDietRecords(e.detail.currentDate);
+  },
+  onDayClick(e) {
+    console.log("点击日期:", e.detail);
+    this.setData({
+      selectedDate: e.detail.currentDate,
+    });
+    this.fetchDietRecords(e.detail.currentDate);
+  },
+
+  fetchDietRecords(date) {
+    const token = wx.getStorageSync("token");
+    wx.request({
+      url: `${BASE_URL}/diet/records`,
+      method: "GET",
+      header: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        date: date,
+      },
+      success: (res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          this.setData({
+            dietRecords: res.data.data,
+          });
+        }
+      },
+      fail: (err) => {
+        console.error("获取饮食记录失败:", err);
+      },
+    });
+  },
+
   checkLoginStatus() {
     const token = wx.getStorageSync("token");
     const userInfo = wx.getStorageSync("userInfo");
@@ -109,95 +163,102 @@ Page({
     });
   },
   fetchChatHistory() {
-    const token = wx.getStorageSync('token');
-    const userInfo = wx.getStorageSync('userInfo');
+    const token = wx.getStorageSync("token");
+    const userInfo = wx.getStorageSync("userInfo");
 
     if (!token || !userInfo) {
       this.setData({
-        messages: [{ 
-          type: 'ai', 
-          content: '👋 嗨！请先在个人中心完成微信授权登录哦~' 
-        }]
+        messages: [
+          {
+            type: "ai",
+            content: "👋 嗨！请先在个人中心完成微信授权登录哦~",
+          },
+        ],
       });
       return;
     }
 
     wx.request({
       url: `${getApp().globalData.BASE_URL}/chat/history`,
-      method: 'GET',
+      method: "GET",
       header: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       success: (res: WechatMiniprogram.RequestSuccessCallbackResult) => {
         const data = res.data as {
-          success: boolean, 
+          success: boolean;
           history: Array<{
-            id: number, 
-            content: string, 
-            type: 'user' | 'ai', 
-            id_file: number,
-            file_name?: string
-          }>
+            id: number;
+            content: string;
+            type: "user" | "ai";
+            id_file: number;
+            file_name?: string;
+          }>;
         };
 
         if (data.success && data.history.length > 0) {
-          const formattedMessages = data.history.map(record => ({
+          const formattedMessages = data.history.map((record) => ({
             id: record.id,
             type: record.type,
-            content: record.id_file === 1 
-              ? `📎 ${record.file_name || '未知文件'}` 
-              : record.content,
-            isFile: record.id_file === 1
+            content:
+              record.id_file === 1
+                ? `📎 ${record.file_name || "未知文件"}`
+                : record.content,
+            isFile: record.id_file === 1,
           }));
 
           this.setData({ messages: formattedMessages });
         } else {
           this.setData({
-            messages: [{ 
-              type: 'ai', 
-              content: '👋 嗨！我是小肉熊AI，很高兴为您服务。' 
-            }]
+            messages: [
+              {
+                type: "ai",
+                content: "👋 嗨！我是小肉熊AI，很高兴为您服务。",
+              },
+            ],
           });
         }
       },
       fail: (err) => {
-        console.error('加载聊天历史失败:', err);
+        console.error("加载聊天历史失败:", err);
         this.setData({
-          messages: [{ 
-            type: 'ai', 
-            content: '😔 加载聊天记录失败，请稍后重试。' 
-          }]
+          messages: [
+            {
+              type: "ai",
+              content: "😔 加载聊天记录失败，请稍后重试。",
+            },
+          ],
         });
-      }
+      },
     });
   },
   onAIChatClick() {
-    console.log('onAIChatClick triggered in calendar page');
+    console.log("onAIChatClick triggered in calendar page");
     // 检查登录状态
-    const token = wx.getStorageSync('token');
-    const userInfo = wx.getStorageSync('userInfo');
+    const token = wx.getStorageSync("token");
+    const userInfo = wx.getStorageSync("userInfo");
 
-    console.log('Token:', token);
-    console.log('UserInfo:', userInfo);
+    console.log("Token:", token);
+    console.log("UserInfo:", userInfo);
 
     if (!token || !userInfo) {
-      console.log('未登录');
+      console.log("未登录");
       // 未登录，跳转到登录页面（tabbar页面）
       wx.switchTab({
-        url: '/pages/login/login',
+        url: "/pages/login/login",
         fail: (err) => {
-          console.error('Switch tab error:', err);
-        }
+          console.error("Switch tab error:", err);
+        },
       });
       return;
     }
 
     // 已登录，加载聊天历史
     this.fetchChatHistory();
-    this.setData({ 
+    this.setData({
       showAIChat: true,
-      userInfo: userInfo
+      userInfo: userInfo,
     });
   },
 });
