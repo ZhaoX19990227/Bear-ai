@@ -1,4 +1,13 @@
 <import src="../../templates/ai-chat-template.wxml" />
 
-<template is="ai-chat-button" />
-<template is="ai-chat-modal" />
+<view class="container">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav-bar">
+    <view class="nav-title">饮食记录</view>
+  </view>
+
+
+</view>
+  <!-- 页面内容 -->
+  <template is="ai-chat-button" />
+  <template is="ai-chat-modal" />

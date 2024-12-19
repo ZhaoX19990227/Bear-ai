@@ -6,37 +6,37 @@
 @bear-secondary: #D2691E;    // 更亮的棕色
 @bear-background: #FFF8DC;   // 奶油色背景
 
-.bear-theme {
-  background-color: #F0E6D2;  // 熊毛色调
-  color: #5D4037;  // 深棕色文字
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  padding: 0 15rpx;
+  width: 100%;
 }
 
-.glass-effect {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+// 添加熊爪装饰
+.container::after {
+  content: '🐾';
+  position: fixed;
+  bottom: 50rpx;
+  left: 30rpx;
+  font-size: 50rpx;
+  opacity: 0.3;
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(15px);
-  border-radius: 12px;
-  margin: 15px;
-  padding: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.container::before {
+  content: '🐻';
+  position: fixed;
+  top: 70rpx;
+  left: 30rpx;
+  font-size: 50rpx;
+  opacity: 0.3;
 }
 
-.ai-button {
-  background-color: #8D6E63;  // 棕色
-  color: white;
-  margin: 15px;
-}
 
-.bear-button {
-  background-color: #A1887F;  // 柔和的棕色
-  color: white;
-}
+
 // AI 聊天模态框样式
 .chat-messages {
   height: 600rpx;
@@ -236,30 +236,3 @@
   }
 }
 
-.cu-bar.input {
-  background-color: white;
-  padding: 20rpx;
-
-  .input-group {
-    display: flex;
-    align-items: center;
-    background-color: #f5f5f5;
-    border-radius: 50rpx;
-    padding: 0 20rpx;
-
-    .file-upload {
-      margin-right: 20rpx;
-      color: #888;
-    }
-
-    .cu-input {
-      flex-grow: 1;
-      padding: 10rpx 0;
-    }
-
-    .send-btn {
-      margin-left: 20rpx;
-      color: #07c160;
-    }
-  }
-}

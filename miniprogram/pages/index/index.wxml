@@ -22,16 +22,12 @@
       </view>
     </swiper-item>
   </swiper>
-
-
-
-
   <!-- 今日饮食容器 -->
   <view class="diet-container">
     <view class="diet-title-container">
     <view class="diet-title">今日饮食</view>
     <view class="add-diet-btn" bindtap="showAddDietModal">
-      <text class="cuIcon-add"></text>
+      <text class="cuIcon-add"/>
     </view>
   </view>
     <!-- 今日饮食总览 -->
@@ -75,25 +71,6 @@
       </block>
     </scroll-view>
   </view>
-
-  <!-- 健康资讯 -->
-  <view class="article-section">
-    <view class="section-title">健康资讯</view>
-    <view class="cu-list menu-card">
-      <block wx:for="{{articleList}}" wx:key="index">
-        <view class="cu-item" bindtap="onArticleClick" data-id="{{item.id}}">
-          <view class="cu-avatar" style="background-image:url({{item.cover}})"></view>
-          <view class="content">
-            <view class="text-black">{{item.title}}</view>
-            <view class="text-gray text-sm">{{item.summary}}</view>
-          </view>
-          <view class="action">
-            <text class="cuIcon-right text-gray"></text>
-          </view>
-        </view>
-      </block>
-    </view>
-  </view>
 </view>
 
 <!-- 添加饮食记录模态框 -->
@@ -106,35 +83,39 @@
       </view>
     </view>
     <view class="padding">
-      <!-- 餐次类型选择 -->
+
       <view class="cu-form-group">
         <view class="title">餐次类型</view>
         <picker 
           mode="selector" 
           range="{{mealTypes}}" 
-          value="{{selectedMealTypeIndex}}" 
+          value="{{newDietRecord.mealType}}" 
           bindchange="onMealTypeChange"
         >
           <view class="picker">
-            {{mealTypes[selectedMealTypeIndex]}}
+            {{newDietRecord.mealType}}
           </view>
         </picker>
       </view>
       
-      <!-- 食物名称输入 -->
+
      <view class="input-container">
     <input 
       type="text" 
-      placeholder="食物名称" 
-      value="{{foodName}}" 
+      placeholder="{{foodNamePlaceholder}}" 
+      value="{{newDietRecord.foodName}}" 
       bindinput="onFoodNameInput"
+      bindfocus="onFoodNameFocus"
+      bindblur="onFoodNameBlur"
       style="flex: 1; margin-right: 5rpx; height: 60rpx;"
     />
     <input 
       type="number" 
-      placeholder="食物重量 (g)" 
+      placeholder="{{weightPlaceholder}}" 
       value="{{newDietRecord.weight}}" 
       bindinput="onFoodWeightInput"
+      bindfocus="onFoodWeightFocus"
+      bindblur="onFoodWeightBlur"
       style="flex: 1; height: 60rpx;"
     />
   </view>
@@ -146,7 +127,7 @@
     <text class="cuIcon-search"></text>
   </button>
       
-      <!-- 热量 -->
+
       <view class="cu-form-group">
         <view class="title">热量 (千卡{{weightUnit}})</view>
         <input 
@@ -157,7 +138,7 @@
         ></input>
       </view>
       
-      <!-- 蛋白质 -->
+
       <view class="cu-form-group">
         <view class="title">蛋白质 (克{{weightUnit}})</view>
         <input 
@@ -168,7 +149,7 @@
         ></input>
       </view>
       
-      <!-- 脂肪 -->
+
       <view class="cu-form-group">
         <view class="title">脂肪 (克{{weightUnit}})</view>
         <input 
@@ -179,7 +160,7 @@
         ></input>
       </view>
       
-      <!-- 确认按钮 -->
+
       <button 
         class="cu-btn block bg-brown margin-top" 
         bindtap="confirmAddDietRecord"
