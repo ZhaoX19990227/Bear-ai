@@ -3,42 +3,51 @@
 
 <view class="container">
   <view class="bear-calendar">
-    <view class="bear-calendar-container">
-      <!-- 日历标题栏 -->
-      <view class="bear-calendar-titlebar">
-        <view class="bear-arrow left" bind:tap="prevMonth">《</view>
-        <text class="bear-calendar-month">{{year}}年{{month}}月</text>
-        <view class="bear-arrow right" bind:tap="nextMonth">》</view>
-        <view class="bear-current-month-btn" bind:tap="locateThisMonth">
-        </view>
-      </view>
-      <!-- 星期行 -->
-      <view class="bear-calendar-weekdays">
-        <view wx:for="{{weekdays}}" wx:key="id" class="bear-weekday-item">{{item}}</view>
-      </view>
-      <!-- 日期 -->
-      <view class="bear-calendar-days">
-        <block wx:for="{{calendarData}}" wx:key="index">
-          <view class="bear-week">
-            <block wx:for="{{item}}" wx:key="index">
-              <block wx:if="{{item === 0}}">
-                <view class="bear-day empty"></view>
-              </block>
-              <block wx:else>
-                <view
-                  class="bear-day {{item === selectedDay ? 'selected' : ''}} {{today && item === day ? 'today' : ''}}"
-                  bindtap="selectDate"
-                  data-value="{{item}}"
-                >
-                  <text>{{item}}</text>
-                </view>
-              </block>
-            </block>
-          </view>
-        </block>
-      </view>
+  <!-- 标题栏 -->
+  <view class="bear-calendar-titlebar">
+    <view class="bear-arrow left" bindtap="prevMonth">《</view>
+    <text class="bear-calendar-month">{{year}}年{{month}}月</text>
+    <view class="bear-arrow right" bindtap="nextMonth">》</view>
+  </view>
+
+  <!-- 星期行 -->
+  <view class="bear-calendar-weekdays">
+    <view wx:for="{{weekdays}}" wx:key="id" class="bear-weekday-item">
+      {{item}}
     </view>
   </view>
+
+  <!-- 日期部分 -->
+  <view class="bear-calendar-days">
+    <block wx:for="{{calendarData}}" wx:key="index">
+      <view 
+        class="bear-week" 
+        wx:if="{{calendarExpanded || index === currentWeekIndex}}"
+      >
+        <!-- 展开显示所有周，默认显示当天所在的周 -->
+        <block wx:for="{{item}}" wx:key="index">
+          <block wx:if="{{item === 0}}">
+            <view class="bear-day empty"></view>
+          </block>
+          <block wx:else>
+            <view
+              class="bear-day {{item === selectedDay ? 'selected' : ''}} {{today && item === day ? 'today' : ''}}"
+              bindtap="selectDate"
+              data-value="{{item}}"
+            >
+              <text>{{item}}</text>
+            </view>
+          </block>
+        </block>
+      </view>
+    </block>
+  </view>
+
+  <!-- 展开/收起按钮 -->
+  <view class="calendar-toggle" bindtap="toggleCalendar">
+    {{calendarExpanded ? "收起 ⬆️" : "展开 ⬇️"}}
+  </view>
+</view>
 </view>
   <!-- 页面内容 -->
   <template is="ai-chat-button" />

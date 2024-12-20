@@ -21,13 +21,9 @@ export async function fetchRandomImages(
           console.log(`${data.totalHits} hits found for keyword: "${keyword}"`);
           const imageUrls = data.hits.map((hit: any) => hit.largeImageURL);
 
-          // 如果有超过5张图片，则随机选择5张；否则全部使用
           const selectedImages =
             imageUrls.length > 5
-              ? Array.from(
-                  { length: 5 },
-                  () => imageUrls[Math.floor(Math.random() * imageUrls.length)]
-                )
+              ? [...imageUrls].sort(() => Math.random() - 0.5).slice(0, 5) // 打乱顺序后取前5项
               : imageUrls;
 
           resolve(selectedImages);

@@ -19,11 +19,60 @@ Page({
     selectedDay: null,
     weekdays: ["日", "一", "二", "三", "四", "五", "六"],
     calendarData: [],
+    calendarExpanded: false, // 日历是否展开
   },
 
   onLoad() {
     this.checkLoginStatus();
     this.generateCalendar();
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const day = currentDate.getDate();
+  
+    // 计算日历数据并找到当天所在的周索引
+    const calendarData = this.generateCalendarData(year, month);
+    const weekIndex = this.findWeekIndex(calendarData, day);
+  
+    this.setData({
+      year,
+      month,
+      day,
+      calendarData,
+      currentWeekIndex: weekIndex,
+      calendarExpanded: false, // 默认部分展示
+    });
+  },
+  findWeekIndex(calendarData, day) {
+    for (let i = 0; i < calendarData.length; i++) {
+      if (calendarData[i].includes(day)) {
+        return i; // 返回当天所在的周索引
+      }
+    }
+    return 0; // 如果未找到，默认返回第一周
+  },
+
+  toggleCalendar() {
+    this.setData({
+      calendarExpanded: !this.data.calendarExpanded,
+    });
+  },
+  generateCalendarData(year, month) {
+    const firstDay = new Date(year, month - 1, 1).getDay();
+    const daysInMonth = new Date(year, month, 0).getDate();
+  
+    const calendarData = [];
+    let week = new Array(firstDay).fill(0);
+  
+    for (let i = 1; i <= daysInMonth; i++) {
+      week.push(i);
+      if (week.length === 7 || i === daysInMonth) {
+        calendarData.push(week);
+        week = [];
+      }
+    }
+  
+    return calendarData;
   },
 
   // 生成日历数据
