@@ -1,13 +1,48 @@
-<import src="../../templates/ai-chat-template.wxml" />
+<navigation-bar title="饮食记录 🐻🍚" back="{{false}}" color="white" background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
 
 <view class="container">
-  <!-- 自定义导航栏 -->
-  <view class="custom-nav-bar">
-    <view class="nav-title">饮食记录</view>
+  <view class="bear-calendar">
+    <view class="bear-calendar-container">
+      <!-- 日历标题栏 -->
+      <view class="bear-calendar-titlebar">
+        <view class="bear-arrow left" bind:tap="prevMonth">《</view>
+        <text class="bear-calendar-month">{{year}}年{{month}}月</text>
+        <view class="bear-arrow right" bind:tap="nextMonth">》</view>
+        <view class="bear-current-month-btn" bind:tap="locateThisMonth">
+          <view class="bear-paw-icon">
+            🐾
+          </view>
+        </view>
+      </view>
+      <!-- 星期行 -->
+      <view class="bear-calendar-weekdays">
+        <view wx:for="{{weekdays}}" wx:key="id" class="bear-weekday-item">{{item}}</view>
+      </view>
+      <!-- 日期 -->
+      <view class="bear-calendar-days">
+        <block wx:for="{{calendarData}}" wx:key="index">
+          <view class="bear-week">
+            <block wx:for="{{item}}" wx:key="index">
+              <block wx:if="{{item === 0}}">
+                <view class="bear-day empty"></view>
+              </block>
+              <block wx:else>
+                <view
+                  class="bear-day {{item === selectedDay ? 'selected' : ''}} {{today && item === day ? 'today' : ''}}"
+                  bindtap="selectDate"
+                  data-value="{{item}}"
+                >
+                  <text>{{item}}</text>
+                </view>
+              </block>
+            </block>
+          </view>
+        </block>
+      </view>
+    </view>
   </view>
 
-
-</view>
   <!-- 页面内容 -->
   <template is="ai-chat-button" />
   <template is="ai-chat-modal" />
+</view>

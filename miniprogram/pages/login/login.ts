@@ -116,7 +116,7 @@ Page({
 
   contactAuthor() {
     wx.showModal({
-      title: "联系作者",
+      title: "联系肥崽先生 🐻‍❄️",
       content: "是否添加作者微信？",
       confirmText: "确定",
       cancelText: "取消",

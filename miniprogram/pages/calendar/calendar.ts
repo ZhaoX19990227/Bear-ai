@@ -12,38 +12,73 @@ Page({
     weightRecords: [],
     messages: [],
     showAIChat: false,
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    day: new Date().getDate(),
+    today: true,
+    selectedDay: null,
+    weekdays: ["日", "一", "二", "三", "四", "五", "六"],
+    calendarData: [],
   },
+
   onLoad() {
     this.checkLoginStatus();
-    this.initCalendar();
+    this.generateCalendar();
   },
-  initCalendar() {
-    // 获取当前日期并高亮
-    const today = new Date();
-    this.setData({
-      daysColor: [
-        {
-          month: today.getMonth() + 1,
-          day: today.getDate(),
-          color: "white",
-          background: "#2575fc",
-        },
-      ],
-    });
+
+  // 生成日历数据
+  generateCalendar() {
+    const { year, month } = this.data;
+    const firstDay = new Date(year, month - 1, 1).getDay();
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const calendar = [];
+
+    let week = Array(firstDay).fill(0); // 填充空白天
+    for (let i = 1; i <= daysInMonth; i++) {
+      week.push(i);
+      if (week.length === 7 || i === daysInMonth) {
+        calendar.push(week);
+        week = [];
+      }
+    }
+
+    this.setData({ calendarData: calendar });
   },
-  onDateChange(e) {
-    console.log("日期变化:", e.detail);
-    this.setData({
-      selectedDate: e.detail.currentDate,
-    });
-    this.fetchDietRecords(e.detail.currentDate);
+
+  prevMonth() {
+    const { year, month } = this.data;
+    const newMonth = month === 1 ? 12 : month - 1;
+    const newYear = month === 1 ? year - 1 : year;
+
+    this.setData({ year: newYear, month: newMonth }, this.generateCalendar);
   },
-  onDayClick(e) {
-    console.log("点击日期:", e.detail);
-    this.setData({
-      selectedDate: e.detail.currentDate,
-    });
-    this.fetchDietRecords(e.detail.currentDate);
+
+  nextMonth() {
+    const { year, month } = this.data;
+    const newMonth = month === 12 ? 1 : month + 1;
+    const newYear = month === 12 ? year + 1 : year;
+
+    this.setData({ year: newYear, month: newMonth }, this.generateCalendar);
+  },
+  locateThisMonth() {
+    const currentDate = new Date();
+    this.setData(
+      {
+        year: currentDate.getFullYear(),
+        month: currentDate.getMonth() + 1,
+        day: currentDate.getDate(),
+        today: true,
+      },
+      this.generateCalendar
+    );
+  },
+
+  selectDate(e: any) {
+    const selectedDay = e.currentTarget.dataset.value;
+    this.setData({ selectedDay, today: false });
+    console.log(
+      `选中日期: ${this.data.year}-${this.data.month}-${selectedDay}`
+    );
   },
 
   fetchDietRecords(date) {
@@ -90,25 +125,11 @@ Page({
       });
     } else {
       this.setData({ userInfo });
-      this.initCalendar();
+      this.renderCalendar();
       this.fetchUserData();
     }
   },
-  initCalendar() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
 
-    this.setData({
-      currentDate: `${year}-${month < 10 ? "0" + month : month}-${
-        day < 10 ? "0" + day : day
-      }`,
-      selectedDate: `${year}-${month < 10 ? "0" + month : month}-${
-        day < 10 ? "0" + day : day
-      }`,
-    });
-  },
   fetchUserData() {
     wx.request({
       url: `${getApp().globalData.BASE_URL}/user/calendar-data`,
