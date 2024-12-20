@@ -1,4 +1,4 @@
-<navigation-bar title="饮食记录 🐻🍚" back="{{false}}" color="white" background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
+<navigation-bar title="饮食记录 🍚" back="{{false}}" color="white" background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
 
 <view class="container">
   <view class="bear-calendar">
@@ -9,9 +9,6 @@
         <text class="bear-calendar-month">{{year}}年{{month}}月</text>
         <view class="bear-arrow right" bind:tap="nextMonth">》</view>
         <view class="bear-current-month-btn" bind:tap="locateThisMonth">
-          <view class="bear-paw-icon">
-            🐾
-          </view>
         </view>
       </view>
       <!-- 星期行 -->
