@@ -1,3 +1,4 @@
+<import src="../../templates/ai-chat-template.wxml" />
 <navigation-bar title="饮食记录 🍚" back="{{false}}" color="white" background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
 
 <view class="container">
@@ -38,8 +39,7 @@
       </view>
     </view>
   </view>
-
+</view>
   <!-- 页面内容 -->
   <template is="ai-chat-button" />
   <template is="ai-chat-modal" />
-</view>
