@@ -178,16 +178,6 @@ Page({
     const userInfo = wx.getStorageSync("userInfo");
 
     if (!token || !userInfo) {
-      // 未登录，设置默认消息并跳转到个人中心
-      this.setData({
-        messages: [
-          {
-            type: "ai",
-            content: "👋 嗨！请先在个人中心完成微信授权登录哦~",
-          },
-        ],
-        userInfo: null,
-      });
 
       wx.switchTab({
         url: "/pages/login/login",

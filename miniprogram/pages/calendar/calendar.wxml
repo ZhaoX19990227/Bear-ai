@@ -5,9 +5,13 @@
   <view class="bear-calendar">
   <!-- 标题栏 -->
   <view class="bear-calendar-titlebar">
-    <view class="bear-arrow left" bindtap="prevMonth">《</view>
-    <text class="bear-calendar-month">{{year}}年{{month}}月</text>
-    <view class="bear-arrow right" bindtap="nextMonth">》</view>
+    <view class="bear-arrow left" bindtap="prevMonth">
+  <view class="arrow-left"></view>
+</view>
+<text class="bear-calendar-month">{{year}}年{{month}}月</text>
+<view class="bear-arrow right" bindtap="nextMonth">
+  <view class="arrow-right"></view>
+</view>
   </view>
 
   <!-- 星期行 -->
@@ -44,9 +48,14 @@
   </view>
 
   <!-- 展开/收起按钮 -->
-  <view class="calendar-toggle" bindtap="toggleCalendar">
-    {{calendarExpanded ? "收起 ⬆️" : "展开 ⬇️"}}
+<view class="calendar-toggle" bindtap="toggleCalendar">
+  <view wx:if="{{calendarExpanded}}">
+    <icon type="success_no_circle" size="30" class="toggle-icon expanded"></icon>
   </view>
+  <view wx:else>
+    <icon type="success" size="30" class="toggle-icon collapsed"></icon>
+  </view>
+</view>
 </view>
 </view>
   <!-- 页面内容 -->
