@@ -29,11 +29,11 @@ Page({
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
     const day = currentDate.getDate();
-  
+
     // 计算日历数据并找到当天所在的周索引
     const calendarData = this.generateCalendarData(year, month);
     const weekIndex = this.findWeekIndex(calendarData, day);
-  
+
     this.setData({
       year,
       month,
@@ -60,10 +60,10 @@ Page({
   generateCalendarData(year, month) {
     const firstDay = new Date(year, month - 1, 1).getDay();
     const daysInMonth = new Date(year, month, 0).getDate();
-  
+
     const calendarData = [];
     let week = new Array(firstDay).fill(0);
-  
+
     for (let i = 1; i <= daysInMonth; i++) {
       week.push(i);
       if (week.length === 7 || i === daysInMonth) {
@@ -71,7 +71,7 @@ Page({
         week = [];
       }
     }
-  
+
     return calendarData;
   },
 
@@ -128,6 +128,7 @@ Page({
     console.log(
       `选中日期: ${this.data.year}-${this.data.month}-${selectedDay}`
     );
+    this.fetchDietRecords(selectedDay);
   },
 
   fetchDietRecords(date) {
