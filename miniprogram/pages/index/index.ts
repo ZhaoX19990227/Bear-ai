@@ -3,11 +3,19 @@ import { BASE_URL } from "../../config";
 const aiChatBehavior = require("../../behaviors/ai-chat-behavior");
 import fatSecretApi from "../../utils/fatSecretApi";
 import { fetchRandomImages } from "../../utils/pixabay";
+import { OpenAI } from "../../utils/openai";
+import { minioClient } from "../../utils/minio";
+
+const competitionClient = new OpenAI({
+  apiKey: "sk-pWsA340xdccN0pfTqzEBPw7JWwsLpSyVrFahIlownsdvavLz",
+  baseURL: "https://api.moonshot.cn/v1",
+});
 
 Page({
   loading: false,
   behaviors: [aiChatBehavior],
   data: {
+    allowedFileTypes: ["doc", "pdf", "ppt", "txt"],
     // 轮播图数据
     swiperList: [],
 
@@ -74,17 +82,17 @@ Page({
   },
 
   onLoad() {
-    console.log("onLoad",this.data.selectedMealTypeIndex);
-    console.log("123",this.data.mealTypes[this.data.selectedMealTypeIndex])
+    console.log("onLoad", this.data.selectedMealTypeIndex);
+    console.log("123", this.data.mealTypes[this.data.selectedMealTypeIndex]);
     this.checkLoginStatus();
     // this.fetchHealthyArticles(); // 页面加载时立即获取一次健康文章
     // 设置定时任务每天凌晨1点执行
     // this.setupCronJob();
     this.loadSwiperImages(); // 加载轮播图图片
     this.setData({
-      "newDietRecord.mealType": this.data.mealTypes[this.data.selectedMealTypeIndex]
+      "newDietRecord.mealType":
+        this.data.mealTypes[this.data.selectedMealTypeIndex],
     });
-   
   },
   async loadSwiperImages() {
     const API_KEY = "47290386-8fe1fd5c22b614fe4f8e5136f";
@@ -178,7 +186,6 @@ Page({
     const userInfo = wx.getStorageSync("userInfo");
 
     if (!token || !userInfo) {
-
       wx.switchTab({
         url: "/pages/login/login",
       });
@@ -295,14 +302,14 @@ Page({
   onFoodNameInput(e) {
     const value = e.detail.value;
     this.setData({
-      "newDietRecord.foodName": value
+      "newDietRecord.foodName": value,
     });
   },
 
   onFoodNameFocus() {
     // 当输入框获得焦点时，清空 placeholder
     this.setData({
-      foodNamePlaceholder: ""
+      foodNamePlaceholder: "",
     });
   },
 
@@ -310,14 +317,14 @@ Page({
     // 当输入框失去焦点时，检查内容是否为空并恢复 placeholder
     if (!this.data.newDietRecord.foodName.trim()) {
       this.setData({
-        foodNamePlaceholder: "食物名称"
+        foodNamePlaceholder: "食物名称",
       });
     }
   },
   onFoodWeightFocus() {
     // 当输入框获得焦点时，清空 placeholder
     this.setData({
-      weightPlaceholder: ""
+      weightPlaceholder: "",
     });
   },
 
@@ -325,11 +332,10 @@ Page({
     // 当输入框失去焦点时，检查内容是否为空并恢复 placeholder
     if (!this.data.newDietRecord.weight) {
       this.setData({
-        weightPlaceholder: "食物重量 (g)"
+        weightPlaceholder: "食物重量 (g)",
       });
     }
   },
-
 
   // 输入处理
   onMealTypeChange(e) {
@@ -499,175 +505,7 @@ Page({
   },
 
   // 选择文件
-  chooseFile() {
-    // 定义允许的文件类型
-    const allowedFileTypes = ["doc", "docx", "pdf", "ppt", "pptx", "txt"];
 
-    wx.chooseMessageFile({
-      count: 1, // 一次选择一个文件
-      type: "file", // 选择文件
-      success: (res) => {
-        const tempFile = res.tempFiles[0];
-        const fileName = tempFile.name;
-        const fileSize = tempFile.size; // 文件大小（字节）
-        const fileExtension = fileName.split(".").pop()?.toLowerCase();
-
-        // 验证文件大小（50MB = 50 * 1024 * 1024 字节）
-        if (fileSize > 50 * 1024 * 1024) {
-          wx.showToast({
-            title: "文件不能超过50MB",
-            icon: "none",
-          });
-          return;
-        }
-
-        // 验证文件类型
-        if (!allowedFileTypes.includes(fileExtension)) {
-          wx.showToast({
-            title: "仅支持上传 doc, pdf, ppt, txt 类型文件",
-            icon: "none",
-          });
-          return;
-        }
-
-        // 准备上传文件
-        wx.uploadFile({
-          url: "https://api.moonshot.cn/v1/chat/file", // 后端文件上传接口
-          filePath: tempFile.path,
-          name: "file",
-          formData: {
-            userId: wx.getStorageSync("userId") || "default_user",
-          },
-          header: {
-            Authorization:
-              "Bearer sk-pWsA340xdccN0pfTqzEBPw7JWwsLpSyVrFahIlownsdvavLz",
-          },
-          success: (uploadRes) => {
-            try {
-              const data = JSON.parse(uploadRes.data);
-
-              if (data.success) {
-                const userMessage = {
-                  type: "user",
-                  content: `📎 ${fileName}`,
-                  isFile: true,
-                };
-
-                const aiMessage = {
-                  type: "ai",
-                  content: data.message || "文件已收到",
-                };
-
-                this.setData({
-                  messages: [...this.data.messages, userMessage, aiMessage],
-                });
-
-                wx.showToast({
-                  title: "文件上传成功",
-                  icon: "success",
-                });
-              } else {
-                wx.showToast({
-                  title: data.message || "文件上传失败",
-                  icon: "none",
-                });
-              }
-            } catch (error) {
-              wx.showToast({
-                title: "解析响应失败",
-                icon: "none",
-              });
-            }
-          },
-          fail: (err) => {
-            console.error("文件上传失败:", err);
-            wx.showToast({
-              title: "文件上传失败",
-              icon: "none",
-            });
-          },
-        });
-      },
-      fail: (err) => {
-        console.error("选择文件失败:", err);
-        wx.showToast({
-          title: "选择文件失败",
-          icon: "none",
-        });
-      },
-    });
-  },
-
-  // 输入消息处理
-  onInputChange(e: WechatMiniprogram.InputEvent) {
-    this.setData({ inputMessage: e.detail.value });
-  },
-
-  // 发送消息并保存到数据库
-  sendMessage() {
-    const { inputMessage, messages } = this.data;
-    const userId = wx.getStorageSync("userId") || "default_user";
-
-    if (!inputMessage.trim()) return;
-
-    wx.request({
-      url: "https://api.moonshot.cn/v1/chat/completions",
-      method: "POST",
-      header: {
-        Authorization:
-          "Bearer sk-pWsA340xdccN0pfTqzEBPw7JWwsLpSyVrFahIlownsdvavLz",
-        "Content-Type": "application/json",
-      },
-      data: {
-        model: "moonshot-v1-8k",
-        messages: [
-          {
-            role: "system",
-            content:
-              "你是 小胖，由 肥崽战士 提供的人工智能助手。你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。回复结尾加上一个emoji。",
-          },
-          {
-            role: "user",
-            content: inputMessage,
-          },
-        ],
-        temperature: 0.3,
-      },
-      success: (res: WechatMiniprogram.RequestSuccessCallbackResult) => {
-        const data = res.data as {
-          choices: Array<{
-            message: {
-              content: string;
-            };
-          }>;
-        };
-
-        const aiMessage = data.choices[0].message.content;
-
-        this.setData({
-          messages: [
-            ...messages,
-            {
-              type: "user",
-              content: inputMessage,
-            },
-            {
-              type: "ai",
-              content: aiMessage,
-            },
-          ],
-          inputMessage: "",
-        });
-      },
-      fail: (err) => {
-        console.error("发送消息失败:", err);
-        wx.showToast({
-          title: "发送消息失败",
-          icon: "none",
-        });
-      },
-    });
-  },
 
   // 获取聊天历史记录
   fetchChatHistory() {
@@ -701,19 +539,19 @@ Page({
             id: number;
             message: string;
             response: string;
-            type: "user" | "ai";
             ifFile: boolean;
+            createdAt: Date;
           }>;
         };
 
         if (data.success && data.history.length > 0) {
           const formattedMessages = data.history.map((record) => ({
             id: record.id,
-            type: record.type,
             content: record.ifFile
               ? `📎 ${record.message || "未知文件"}`
               : record.message,
             isFile: record.ifFile,
+            createdAt: record.createdAt,
           }));
 
           this.setData({ messages: formattedMessages });

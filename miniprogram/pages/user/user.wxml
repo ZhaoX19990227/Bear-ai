@@ -1,0 +1,12 @@
+<import src="../../templates/ai-chat-template.wxml" />
+<navigation-bar title="个人中心 🐻" back="{{false}}" color="white" background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
+
+<view class="profile-container">
+  <image src="{{userInfo.avatarUrl}}" alt="User Avatar" class="user-avatar" />
+  <text class="user-name">{{userInfo.username}}</text>
+  <text class="user-email">{{userInfo.email || '未设置邮箱'}}</text>
+
+  
+  <button bindtap="onEditProfile">编辑个人资料</button>
+  <button bindtap="onLogout">退出登录</button>
+</view>

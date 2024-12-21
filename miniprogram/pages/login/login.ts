@@ -2,114 +2,62 @@ import { BASE_URL } from "../../config";
 
 Page({
   data: {
+    userInfo: {},
     hasUserInfo: false,
     canIUseGetUserProfile: false,
-    userInfo: null,
     StatusBar: 0,
     CustomBar: 0,
     canBack: false,
+    code: "",
   },
 
   onLoad() {
-    const app = getApp();
-    this.setData({
-      StatusBar: app.globalData.StatusBar || 0,
-      CustomBar: app.globalData.CustomBar || 0,
-      canIUseGetUserProfile: typeof wx.getUserProfile === "function",
-    });
-    this.checkLoginStatus();
-  },
-
-  onGetUserInfo() {
-    this.getUserProfile();
-  },
-
-  checkLoginStatus() {
-    const token = wx.getStorageSync("token");
-    const userInfo = wx.getStorageSync("userInfo");
-
-    if (token && userInfo) {
+    if (wx.getUserProfile) {
       this.setData({
-        userInfo: userInfo,
-        hasUserInfo: true,
+        canIUseGetUserProfile: true,
       });
+    } else {
+      console.log("当前版本不支持 getUserProfile");
     }
   },
 
-  getUserProfile() {
+  onChooseAvatar(e) {
+    const { avatarUrl } = e.detail 
+    this.setData({
+      userInfo: {
+        ...this.data.userInfo,
+        avatarUrl,
+      },
+    })
+  },
+  // 获取用户信息，使用 wx.getUserProfile
+  getUserProfile(e) {
+    // 调用微信接口获取用户信息
     wx.getUserProfile({
-      desc: "用于完善用户资料",
+      desc: "用于完善会员资料", // 授权的用途
       success: (res) => {
-        wx.showLoading({
-          title: "登录中...",
-          mask: true,
-        });
-
-        wx.login({
-          success: (loginRes) => {
-            wx.request({
-              url: `${BASE_URL}/auth/login`,
-              method: "POST",
-              data: {
-                code: loginRes.code,
-              },
-              success: (response: any) => {
-                wx.hideLoading();
-                if (response.data.success) {
-                  const { openId, sessionKey, unionId } = response.data;
-
-                  wx.setStorageSync("openId", openId);
-                  wx.setStorageSync("sessionKey", sessionKey);
-                  wx.setStorageSync("unionId", unionId);
-                  wx.setStorageSync("userInfo", res.userInfo);
-
-                  this.setData({
-                    userInfo: res.userInfo,
-                    hasUserInfo: true,
-                  });
-
-                  wx.showToast({
-                    title: "登录成功",
-                    icon: "success",
-                  });
-
-                  wx.switchTab({
-                    url: "/pages/index/index",
-                  });
-                } else {
-                  wx.showToast({
-                    title: "登录失败：" + response.data.message,
-                    icon: "none",
-                  });
-                }
-              },
-              fail: (err) => {
-                wx.hideLoading();
-                wx.showToast({
-                  title: "网络错误：" + err.errMsg,
-                  icon: "none",
-                });
-              },
-            });
-          },
+        console.log("获取用户信息成功:", res);
+        this.setData({
+          userInfo: res.userInfo,
+          hasUserInfo: true,
         });
       },
-      fail: () => {
+      fail: (err) => {
+        console.log("获取用户信息失败:", err);
         wx.showToast({
-          title: "授权失败",
+          title: "授权失败，请重试",
           icon: "none",
         });
       },
     });
   },
 
+  // 获取用户信息回调
   getUserInfo(e) {
     const userInfo = e.detail.userInfo;
     if (userInfo) {
-      wx.setStorageSync("userInfo", userInfo);
       this.setData({
         userInfo: userInfo,
-        hasUserInfo: true,
       });
     }
   },

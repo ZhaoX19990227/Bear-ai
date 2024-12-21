@@ -5,15 +5,8 @@ module.exports = {
 };
 </wxs>
 
-<view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-white">
-    <navigator class='action' hover-class='none' bindtap='BackPage' wx:if="{{canBack}}">
-      <text class='icon-back'></text>
-    </navigator>
-  </view>
-</view>
-
 <view class="container">
+  <!-- 页面内容 -->
   <view class="login-wrapper">
     <image 
       class="avatar" 
@@ -24,18 +17,24 @@ module.exports = {
     <view class="title">小肉熊健康助手</view>
     <view class="subtitle">专注于您的健康管理</view>
 
-    <button 
-      class="login-btn" 
-      open-type="getUserProfile" 
-      bindgetuserinfo="getUserInfo"
-      bindtap="getUserProfile"
-    >
-      <image 
-        class="weixin-icon" 
-        src="{{utils.aiAvatar}}"
-      ></image>
-      微信一键登录
-    </button>
+    <view class="userinfo">
+      <!-- 如果没有用户信息，显示获取头像和昵称的按钮 -->
+      <block wx:if="{{!hasUserInfo}}">
+        <button class="get-info-btn" bindtap="getUserProfile" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar"> 点击获取头像昵称 </button>
+        <view class="nickname-section">
+          <input type="nickname" class="weui-input" placeholder="请输入昵称" bindblur="onBlur" />
+          <text class="nickname-text">请输入您的昵称</text>
+        </view>
+      </block>
+
+
+      <block wx:else>
+        <view class="userinfo-details">
+          <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover" />
+          <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        </view>
+      </block>
+    </view>
 
     <view class="agreement">
       登录即表示同意
@@ -52,5 +51,16 @@ module.exports = {
       联系作者
     </button>
   </view>
-</view> 
-
+    <!-- 使用 WeUI 的 actionsheet 组件作为自定义弹窗 -->
+  <view class="weui-actionsheet" wx:if="{{showPopup}}" style="display:{{showPopup ? 'block' : 'none'}};">
+    <view class="weui-actionsheet__menu">
+      <view class="popup-content">
+        <image class="popup-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+        <text class="popup-nickname">{{userInfo.nickName}}</text>
+      </view>
+    </view>
+    <view class="weui-actionsheet__action">
+      <div class="weui-actionsheet__cell" bindtap="closePopup" aria-label="关闭授权窗口">取消</div>
+    </view>
+  </view>
+</view>

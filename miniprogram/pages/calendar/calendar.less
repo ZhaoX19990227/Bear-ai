@@ -6,7 +6,13 @@
 @bear-secondary: #D2691E;    // 更亮的棕色
 @bear-background: #FFF8DC;   // 奶油色背景
 
-
+page {
+  min-height: 100vh; /* 使用 min-height 以适应更多内容 */
+  display: flex;
+  flex-direction: column;
+  background-color: @bear-background;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -14,6 +20,7 @@
   flex-grow: 1;
   padding: 0 15rpx;
   width: 100%;
+  background-color: @bear-background;
 }
 
 // 添加熊爪装饰
@@ -273,7 +280,7 @@
 .bear-calendar-weekdays {
   display: flex;
   justify-content: space-around;
-  background: #FFF0F5;
+  background: #f5f5f5;
   border-radius: 10rpx;
   padding: 10rpx 0;
   margin-bottom: 10rpx;
