@@ -21,12 +21,7 @@ module.exports = {
       <!-- 如果没有用户信息，显示获取头像和昵称的按钮 -->
       <block wx:if="{{!hasUserInfo}}">
         <button class="get-info-btn" bindtap="getUserProfile" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar"> 点击获取头像昵称 </button>
-        <view class="nickname-section">
-          <input type="nickname" class="weui-input" placeholder="请输入昵称" bindblur="onBlur" />
-          <text class="nickname-text">请输入您的昵称</text>
-        </view>
       </block>
-
 
       <block wx:else>
         <view class="userinfo-details">
@@ -51,16 +46,24 @@ module.exports = {
       联系作者
     </button>
   </view>
-    <!-- 使用 WeUI 的 actionsheet 组件作为自定义弹窗 -->
+
+  <!-- 使用 WeUI 的 actionsheet 组件作为自定义弹窗 -->
   <view class="weui-actionsheet" wx:if="{{showPopup}}" style="display:{{showPopup ? 'block' : 'none'}};">
     <view class="weui-actionsheet__menu">
       <view class="popup-content">
         <image class="popup-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
-        <text class="popup-nickname">{{userInfo.nickName}}</text>
+        <input 
+          type="nickname" 
+          class="weui-input" 
+          placeholder="请输入昵称" 
+          bindblur="onBlur" 
+          value="{{inputNickname}}"
+        />
       </view>
     </view>
     <view class="weui-actionsheet__action">
-      <div class="weui-actionsheet__cell" bindtap="closePopup" aria-label="关闭授权窗口">取消</div>
+      <view class="weui-actionsheet__cell" bindtap="closePopup">取消</view>
+      <view class="weui-actionsheet__cell" bindtap="confirmUserInfo">确认</view>
     </view>
   </view>
 </view>

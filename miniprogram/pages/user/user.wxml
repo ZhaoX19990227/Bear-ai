@@ -3,7 +3,7 @@
 
 <view class="profile-container">
   <image src="{{userInfo.avatarUrl}}" alt="User Avatar" class="user-avatar" />
-  <text class="user-name">{{userInfo.username}}</text>
+  <text class="user-name">{{userInfo.nickname}}</text>
   <text class="user-email">{{userInfo.email || '未设置邮箱'}}</text>
 
   
