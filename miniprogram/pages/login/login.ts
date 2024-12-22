@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import { BASE_URL } from "../../config";
 import WXBizDataCrypt from "../../utils/WXBizDataCrypt";
 
@@ -80,7 +81,10 @@ Page({
   onBlur(e) {
     const inputNickname = e.detail.value.trim();
     this.setData({
-      inputNickname: inputNickname
+      userInfo: {
+        ...this.data.userInfo,
+        nickName: inputNickname
+      }
     });
   },
 
@@ -91,7 +95,7 @@ Page({
   },
 
   confirmUserInfo() {
-    if (!this.data.inputNickname) {
+    if (!this.data.userInfo.nickName) {
       wx.showToast({
         title: "请输入昵称",
         icon: "none"
@@ -101,7 +105,7 @@ Page({
 
     const updatedUserInfo = {
       ...this.data.userInfo,
-      nickName: this.data.inputNickname
+      nickName: this.data.userInfo.nickName
     };
 
     this.setData({
@@ -187,11 +191,6 @@ Page({
               this.setData({
                 userInfo: res.data.userInfo,
                 hasUserInfo: true,
-              });
-
-              wx.showToast({
-                title: "登录成功",
-                icon: "success",
               });
             } else {
               wx.showToast({

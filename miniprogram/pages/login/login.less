@@ -134,6 +134,10 @@ page {
 
 .userinfo-details {
   margin-bottom: 20rpx;
+  gap: 12px; /* 设置头像和昵称的间距 */
+  align-items: center; /* 垂直居中对齐 */
+  display: flex; /* 启用 Flex 布局 */
+  justify-content: center;
 }
 
 .userinfo-avatar {
@@ -141,11 +145,14 @@ page {
   height: 80rpx;
   border-radius: 50%;
   margin-bottom: 10rpx;
+  object-fit: cover; /* 确保头像比例适配 */
 }
 
 .userinfo-nickname {
-  font-size: 28rpx;
-  color: #333;
+  font-size: 16px; /* 设置昵称文字大小 */
+  color: #333; /* 设置昵称文字颜色 */
+  line-height: 1.2; /* 调整文字行高 */
+  white-space: nowrap; /* 防止昵称换行 */
 }
 
 .agreement {
