@@ -10,6 +10,7 @@ export default Behavior({
   methods: {
     // AI 聊天相关通用方法
     onAIChatClick() {
+      console.log("onAIChatClick");
       const token = wx.getStorageSync("token");
       const userInfo = wx.getStorageSync("userInfo");
 

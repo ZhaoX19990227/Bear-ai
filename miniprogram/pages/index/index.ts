@@ -1,4 +1,3 @@
-// index.ts
 import { BASE_URL } from "../../config";
 import aiChatBehavior from "../../behaviors/ai-chat-behavior";
 import fatSecretApi from "../../utils/fatSecretApi";
@@ -12,7 +11,6 @@ const competitionClient = new OpenAI({
 });
 
 Page({
-  loading: false,
   behaviors: [aiChatBehavior],
   data: {
     allowedFileTypes: ["doc", "pdf", "ppt", "txt"],
@@ -81,8 +79,6 @@ Page({
   },
 
   onLoad() {
-    console.log("onLoad", this.data.selectedMealTypeIndex);
-    console.log("123", this.data.mealTypes[this.data.selectedMealTypeIndex]);
     this.checkLoginStatus();
     // this.fetchHealthyArticles(); // 页面加载时立即获取一次健康文章
     // 设置定时任务每天凌晨1点执行
@@ -95,11 +91,10 @@ Page({
   },
   async loadSwiperImages() {
     const API_KEY = "47290386-8fe1fd5c22b614fe4f8e5136f";
-    const keyword = "美食，健康饮食";
+    const keyword = "美食，健康饮食，水果";
 
     try {
       const imageUrls = await fetchRandomImages(keyword, API_KEY);
-      // 确保 imageUrls 是一个数组
       if (!Array.isArray(imageUrls)) {
         console.error("Expected an array of image URLs but got:", imageUrls);
         return;
@@ -110,75 +105,12 @@ Page({
         swiperList: imageUrls.slice(0, 5).map((url, index) => ({
           id: index + 1,
           url: url,
-          // title: `${keyword} 图片 ${index + 1}`
         })),
       });
     } catch (error) {
       console.error("Failed to load swiper images:", error);
     }
   },
-  // setupCronJob() {
-  //   if (typeof wx !== 'undefined' && typeof wx.getBackgroundFetchToken === 'function') {
-  //     // 如果是微信小程序环境并且支持后台更新机制，则使用它
-  //     wx.getBackgroundFetchToken({
-  //       success(res) {
-  //         console.log('Background fetch token:', res.token);
-  //       }
-  //     });
-  //   } else {
-  //     // 使用 node-cron 或其他方法模拟定时任务（仅限开发测试）
-  //     console.warn('Background fetch not supported, using fallback cron job.');
-  //     const cron = require("node-cron");
-  //     cron.schedule("0 1 * * *", () => {
-  //       console.log("Fetching healthy articles at 1 AM...");
-  //       this.fetchHealthyArticles();
-  //     });
-  //   }
-  // },
-
-  // async fetchHealthyArticles() {
-  //   try {
-  //     const appId = "8d7de087"; // 在微信小程序中直接填写或从本地缓存读取
-  //     const appKey = "0f2e1dcbb409f49cf2d9bd41b63627dd"; // 同上
-  //     const url = `https://api.edamam.com/search?q=healthy&app_id=${appId}&app_key=${appKey}`;
-
-  //     // 使用 wx.request 替代 axios
-  //     wx.request({
-  //       url: url,
-  //       method: 'GET',
-  //       success: (res) => {
-  //         if (res.statusCode === 200) {
-  //           const articles = res.data.hits.map((hit: any) => ({
-  //             title: hit.recipe.label,
-  //             image: hit.recipe.image,
-  //             source: hit.recipe.source,
-  //             url: hit.recipe.url,
-  //           }));
-
-  //           // 更新文章列表数据
-  //           this.setData({
-  //             fetchedArticles: articles,
-  //           });
-
-  //           console.log("Fetched healthy articles:", articles);
-  //         } else {
-  //           console.error("Error fetching articles. Status code:", res.statusCode);
-  //         }
-  //       },
-  //       fail: (error) => {
-  //         console.error("Error fetching articles:", error);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error("Unexpected error fetching articles:", error);
-  //   }
-  // },
-  // onArticleClick(e: WechatMiniprogram.CustomEvent) {
-  //   const id = e.currentTarget.dataset.id;
-  //   wx.navigateTo({
-  //     url: `/pages/article-detail/article-detail?id=${id}`,
-  //   });
-  // },
 
   checkLoginStatus() {
     const token = wx.getStorageSync("token");
@@ -371,17 +303,6 @@ Page({
     const userInfo = wx.getStorageSync("userInfo");
 
     if (!token || !userInfo) {
-      // 未登录，设置默认消息并跳转到个人中心
-      this.setData({
-        messages: [
-          {
-            type: "ai",
-            content: "👋 嗨！请先在个人中心完成微信授权登录哦~",
-          },
-        ],
-        userInfo: null,
-      });
-
       wx.navigateTo({
         url: "/pages/user/user",
       });
@@ -532,7 +453,6 @@ Page({
       return;
     }
 
-    this.setData({ loading: true });
     try {
       const food = await fatSecretApi.searchFood(foodName);
       console.log("搜索到的食物:", food);
@@ -575,8 +495,6 @@ Page({
         title: "搜索食物失败",
         icon: "none",
       });
-    } finally {
-      this.setData({ loading: false });
     }
   },
   onFoodWeightInput(e: any) {
