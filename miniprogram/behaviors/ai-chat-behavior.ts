@@ -103,8 +103,8 @@ export default Behavior({
       if (!inputMessage.trim()) return;
 
       // 开始加载
-      this.setData({
-        isLoading: true,
+      wx.showLoading({
+        title: "小肉熊AI思考中...",
       });
 
       wx.request({
@@ -128,15 +128,12 @@ export default Behavior({
           this.setData({
             messages: newMessages,
             inputMessage: "",
-            isLoading: false,
           });
+          wx.hideLoading();
         },
         fail: (err) => {
           console.error("发送消息失败", err);
-          // 加载失败也要结束加载状态
-          this.setData({
-            isLoading: false,
-          });
+          wx.hideLoading();
           wx.showToast({
             title: "发送消息失败",
             icon: "none",

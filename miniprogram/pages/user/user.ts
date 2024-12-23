@@ -146,7 +146,7 @@ Page({
             icon: "success",
             success: () => {
               wx.switchTab({
-                url: "/pages/login/login",
+                url: "/pages/index/index",
               });
             },
           });

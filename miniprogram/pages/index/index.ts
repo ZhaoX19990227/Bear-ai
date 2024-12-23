@@ -452,6 +452,9 @@ Page({
       });
       return;
     }
+    wx.showLoading({
+      title: "小肉熊AI思考中...",
+    });
 
     try {
       const food = await fatSecretApi.searchFood(foodName);
@@ -489,8 +492,10 @@ Page({
         },
       });
       this.calculateResults(); // 初始渲染
+      wx.hideLoading();
     } catch (error) {
       console.error("搜索食物失败:", error);
+      wx.hideLoading();
       wx.showToast({
         title: "搜索食物失败",
         icon: "none",
