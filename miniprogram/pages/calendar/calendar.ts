@@ -175,7 +175,6 @@ Page({
       });
     } else {
       this.setData({ userInfo });
-      this.renderCalendar();
       this.fetchUserData();
     }
   },

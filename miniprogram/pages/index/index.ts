@@ -486,7 +486,6 @@ Page({
 
     if (!token || !userInfo) {
       console.log("未登录");
-      // 未登录，跳转到登录页面（tabbar页面）
       wx.navigateTo({
         url: "/pages/user/user",
         fail: (err) => {
