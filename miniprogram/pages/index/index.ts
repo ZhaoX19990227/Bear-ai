@@ -71,7 +71,7 @@ Page({
     groupedDietRecords: [] as Array<{
       mealType: string;
       records: Array<{
-        foodName: string;
+        food_name: string;
         calories: number;
         protein: number;
         fat: number;
@@ -212,14 +212,14 @@ Page({
           Authorization: `Bearer ${token}`,
         },
         success: (res) => {
-          if (res.statusCode === 200 && res.data.code === 0) {
+          console.log("res:", JSON.stringify(res.data));
+          if (res.statusCode && res.data) {
             // 检查响应状态
-            const records = res.data.data;
-            const updatedRecords = [...records, this.data.newRecord];
-
+            const records = res.data;
+            const updatedRecords = [...records, ...this.data.todayDietRecords];
             // 更新页面数据
             this.setData({
-              dietRecords: updatedRecords,
+              todayDietRecords: updatedRecords,
               todayRecords: records, // 直接使用从后端获取的当天记录
             });
             // 如果有其他需要更新的操作，比如 UI 或者计算总计
@@ -258,6 +258,7 @@ Page({
       (sum, record) => sum + (record.fat || 0),
       0
     );
+    console.log("todayRecords", todayRecords);
     // 按照餐次类型分组
     const groupedRecords = this.groupDietRecordsByMealType(todayRecords);
 
@@ -367,26 +368,6 @@ Page({
 
   // 确认添加饮食记录
   confirmAddDietRecord() {
-    const { mealType, foodName, calories, protein, fat, weight } =
-      this.data.newDietRecord;
-
-    console.log("Confirm Add Diet Record:", {
-      mealType,
-      foodName,
-      calories,
-      protein,
-      fat,
-      weight,
-    });
-
-    if (!mealType || !foodName || !calories || !protein || !fat || !weight) {
-      wx.showToast({
-        title: "请填写完整信息哦～🐻",
-        icon: "none",
-      });
-      return;
-    }
-
     const token = wx.getStorageSync("token");
     const userInfo = wx.getStorageSync("userInfo");
 
@@ -412,6 +393,26 @@ Page({
       });
     }
 
+    const { mealType, foodName, calories, protein, fat, weight } =
+      this.data.newDietRecord;
+
+    console.log("Confirm Add Diet Record:", {
+      mealType,
+      foodName,
+      calories,
+      protein,
+      fat,
+      weight,
+    });
+
+    if (!mealType || !foodName || !calories || !protein || !fat || !weight) {
+      wx.showToast({
+        title: "请填写完整信息哦～🐻",
+        icon: "none",
+      });
+      return;
+    }
+
     const newRecord = {
       ...this.data.newDietRecord,
       date: new Date().toISOString(),
@@ -427,12 +428,16 @@ Page({
           Authorization: `Bearer ${token}`,
         },
         data: newRecord,
-      }).success(() => {
-        this.setData({
-          selectedMealTypeIndex: 0,
-          showAddDietModal: false,
-        });
-        this.loadTodayDietInfo();
+        success: (res) => {
+          console.log("res", res);
+          if (res.statusCode) {
+            this.setData({
+              selectedMealTypeIndex: 0,
+              showAddDietModal: false,
+            });
+            this.loadTodayDietInfo();
+          }
+        },
       });
     } catch (e) {
       console.error("保存饮食记录失败", e);
@@ -505,7 +510,6 @@ Page({
   },
 
   // 选择文件
-
 
   // 获取聊天历史记录
   fetchChatHistory() {
@@ -586,9 +590,17 @@ Page({
     mealType: string;
     records: any[];
   }> {
-    const mealTypeOrder = ["早餐", "午餐", "晚餐", "加餐"];
+    const mealTypeOrder = ["早餐", "午餐", "下午茶", "晚餐", "加餐", "其他"];
 
-    // 按餐次类型分组
+    // 动态获取实际出现的 mealType
+    const actualMealTypes = Array.from(
+      new Set(records.map((record) => record.mealType))
+    );
+
+    // 合并并去重
+    const combinedMealTypeOrder = [
+      ...new Set([...mealTypeOrder, ...actualMealTypes]),
+    ];
     const groupedRecords = records.reduce((acc, record) => {
       const existingGroup = acc.find(
         (group) => group.mealType === record.mealType
@@ -609,7 +621,8 @@ Page({
     // 按照预定义顺序排序
     return groupedRecords.sort(
       (a, b) =>
-        mealTypeOrder.indexOf(a.mealType) - mealTypeOrder.indexOf(b.mealType)
+        combinedMealTypeOrder.indexOf(a.mealType) -
+        combinedMealTypeOrder.indexOf(b.mealType)
     );
   },
   async searchFoodByName() {

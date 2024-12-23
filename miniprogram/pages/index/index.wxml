@@ -33,15 +33,15 @@
     <!-- 今日饮食总览 -->
     <view class="diet-summary">
         <view class="summary-item">
-        <text class="label">热量</text>
+        <text class="label">🔥</text>
         <text class="value">{{totalCalories}} 千卡</text>
       </view>
       <view class="summary-item">
-        <text class="label">蛋白质</text>
+        <text class="label">🍳</text>
         <text class="value">{{totalProtein}} 克</text>
       </view>
       <view class="summary-item">
-        <text class="label">脂肪</text>
+        <text class="label">🥩</text>
         <text class="value">{{totalFat}} 克</text>
       </view>
     </view> 
@@ -58,10 +58,11 @@
           <block wx:for="{{item.records}}" wx:key="index" wx:for-item="record">
             <view class="cu-item diet-record">
               <view class="diet-record-content">
-                <text class="diet-record-name">{{record.foodName}}</text>
+                <text class="diet-record-name">{{record.food_name}} - {{record.weight}}克</text>
                 <view class="diet-record-details">
                   <text>热量：{{record.calories}} 千卡</text>
                   <text>蛋白质：{{record.protein}} 克</text>
+                  <text>脂肪：{{record.fat}} 克</text>
                   <text class="diet-record-time">{{record.time}}</text>
                 </view>
               </view>
