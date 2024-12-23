@@ -1,12 +1,69 @@
-<import src="../../templates/ai-chat-template.wxml" />
-<navigation-bar title="个人中心 🐻" back="{{false}}" color="white" background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
+<wxs module="utils">
+var AI_AVATAR = 'https://attach-sit.oss-cn-shanghai.aliyuncs.com/default/28a14b07da0d4e7684758a48649b5ad9.png?1=1';
+module.exports = {
+  aiAvatar: AI_AVATAR
+};
+</wxs>
 
-<view class="profile-container">
-  <image src="{{userInfo.avatarUrl}}" alt="User Avatar" class="user-avatar" />
-  <text class="user-name">{{userInfo.nickname}}</text>
-  <text class="user-email">{{userInfo.email || '未设置邮箱'}}</text>
+<view class="container">
+  <!-- 页面内容 -->
+  <view class="login-wrapper">
+    <image 
+      class="avatar" 
+      src="{{utils.aiAvatar}}"
+      mode="aspectFill"
+    ></image>
+    
+    <view class="title">小肉熊健康助手</view>
+    <view class="subtitle">专注于您的健康管理</view>
 
-  
-  <button bindtap="onEditProfile">编辑个人资料</button>
-  <button bindtap="onLogout">退出登录</button>
+    <view class="userinfo">
+      <!-- 如果没有用户信息，显示获取头像和昵称的按钮 -->
+      <block wx:if="{{!hasUserInfo}}">
+        <button class="get-info-btn" bindtap="getUserProfile" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar"> 点击获取头像昵称 </button>
+      </block>
+
+      <block wx:else>
+        <view class="userinfo-details">
+          <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover" />
+          <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="agreement">
+      登录即表示同意
+      <text class="agreement-link">用户协议</text>和
+      <text class="agreement-link">隐私政策</text>
+    </view>
+  </view>
+
+  <view class="contact-section">
+    <button 
+      class="cu-btn block bg-brown margin-top" 
+      bindtap="contactAuthor"
+    >
+      联系作者
+    </button>
+  </view>
+
+  <!-- 使用 WeUI 的 actionsheet 组件作为自定义弹窗 -->
+  <view class="weui-actionsheet" wx:if="{{showPopup}}" style="display:{{showPopup ? 'block' : 'none'}};">
+    <view class="weui-actionsheet__menu">
+      <view class="popup-content">
+        <image class="popup-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+        <input 
+          type="nickname" 
+          class="weui-input" 
+          placeholder="请输入昵称" 
+          bindblur="onBlur" 
+          value="{{inputNickname}}"
+        />
+      </view>
+    </view>
+    <view class="weui-actionsheet__action">
+      <view class="weui-actionsheet__cell" bindtap="closePopup">取消</view>
+      <view class="weui-actionsheet__cell" bindtap="confirmUserInfo">确认</view>
+    </view>
+  </view>
 </view>

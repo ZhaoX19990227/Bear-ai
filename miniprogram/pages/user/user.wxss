@@ -1,0 +1,2 @@
+/* 使用less文件作为主要样式定义 */
+@import "./user.less";

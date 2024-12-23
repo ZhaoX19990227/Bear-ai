@@ -186,8 +186,8 @@ Page({
     const userInfo = wx.getStorageSync("userInfo");
 
     if (!token || !userInfo) {
-      wx.switchTab({
-        url: "/pages/login/login",
+      wx.navigateTo({
+        url: "/pages/user/user",
       });
     } else {
       this.setData({
@@ -402,8 +402,8 @@ Page({
         userInfo: null,
       });
 
-      wx.switchTab({
-        url: "/pages/login/login",
+      wx.navigateTo({
+        url: "/pages/user/user",
       });
     } else {
       this.setData({
@@ -482,8 +482,8 @@ Page({
     if (!token || !userInfo) {
       console.log("未登录");
       // 未登录，跳转到登录页面（tabbar页面）
-      wx.switchTab({
-        url: "/pages/login/login",
+      wx.navigateTo({
+        url: "/pages/user/user",
         fail: (err) => {
           console.error("Switch tab error:", err);
         },
