@@ -1,6 +1,6 @@
 // index.ts
 import { BASE_URL } from "../../config";
-const aiChatBehavior = require("../../behaviors/ai-chat-behavior");
+import aiChatBehavior from "../../behaviors/ai-chat-behavior";
 import fatSecretApi from "../../utils/fatSecretApi";
 import { fetchRandomImages } from "../../utils/pixabay";
 import { OpenAI } from "../../utils/openai";
@@ -48,7 +48,6 @@ Page({
     showAIChat: false,
     messages: [] as Array<{
       id?: number;
-      type: "user" | "ai" | "error";
       content: string;
       avatarUrl?: string;
       fileUrl?: string;
@@ -474,115 +473,6 @@ Page({
     });
   },
 
-  // AI 聊天功能
-  onAIChatClick() {
-    console.log("onAIChatClick triggered in index page");
-    // 检查登录状态
-    const token = wx.getStorageSync("token");
-    const userInfo = wx.getStorageSync("userInfo");
-
-    console.log("Token:", token);
-    console.log("UserInfo:", userInfo);
-
-    if (!token || !userInfo) {
-      console.log("未登录");
-      wx.navigateTo({
-        url: "/pages/user/user",
-        fail: (err) => {
-          console.error("Switch tab error:", err);
-        },
-      });
-      return;
-    }
-
-    // 已登录，加载聊天历史
-    this.fetchChatHistory();
-    this.setData({
-      showAIChat: true,
-      userInfo: userInfo,
-    });
-  },
-
-  // 隐藏 AI 聊天窗口
-  hideAIChat() {
-    this.setData({ showAIChat: false });
-  },
-
-  // 选择文件
-
-  // 获取聊天历史记录
-  fetchChatHistory() {
-    const token = wx.getStorageSync("token");
-    const userInfo = wx.getStorageSync("userInfo");
-
-    // 只有在已登录且点击AI按钮时才获取聊天历史
-    if (!token || !userInfo) {
-      this.setData({
-        messages: [
-          {
-            type: "ai",
-            content: "👋 嗨！请先在个人中心完成微信授权登录哦~",
-          },
-        ],
-      });
-      return;
-    }
-
-    wx.request({
-      url: `${BASE_URL}/chat/history`,
-      method: "GET",
-      header: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      success: (res: WechatMiniprogram.RequestSuccessCallbackResult) => {
-        const data = res.data as {
-          success: boolean;
-          history: Array<{
-            id: number;
-            message: string;
-            response: string;
-            ifFile: boolean;
-            createdAt: Date;
-          }>;
-        };
-
-        if (data.success && data.history.length > 0) {
-          const formattedMessages = data.history.map((record) => ({
-            id: record.id,
-            content: record.ifFile
-              ? `📎 ${record.message || "未知文件"}`
-              : record.message,
-            isFile: record.ifFile,
-            createdAt: record.createdAt,
-          }));
-
-          this.setData({ messages: formattedMessages });
-        } else {
-          // 如果没有历史记录，显示默认消息
-          this.setData({
-            messages: [
-              {
-                type: "ai",
-                content: "👋 嗨！我是小肉熊AI，很高兴为您服务。",
-              },
-            ],
-          });
-        }
-      },
-      fail: (err) => {
-        console.error("加载聊天历史失败:", err);
-        this.setData({
-          messages: [
-            {
-              type: "ai",
-              content: "😔 加载聊天记录失败，请稍后重试。",
-            },
-          ],
-        });
-      },
-    });
-  },
 
   // 添加分组方法
   groupDietRecordsByMealType(records: any[]): Array<{

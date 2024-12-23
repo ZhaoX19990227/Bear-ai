@@ -16,7 +16,7 @@
   <view class="cu-modal {{showAIChat?'show':''}}">
     <view class="cu-dialog">
       <view class="cu-bar bg-white justify-end">
-        <view class="content">AI 助手</view>
+        <view class="content">小肉熊AI 助手🐻</view>
         <view class="action" bindtap="hideAIChat">
           <text class="cuIcon-close text-red"></text>
         </view>
@@ -37,14 +37,7 @@
               class="chat-avatar"
             ></image>
             <view class="message-content">
-              <text class="message-text">{{item.content}}</text>
-              <view wx:if="{{item.fileUrl}}" class="message-file">
-                <image 
-                  src="{{item.fileUrl}}" 
-                  mode="aspectFill" 
-                  class="message-image"
-                ></image>
-              </view>
+              {{item.content}}
             </view>
           </view>
         </block>
