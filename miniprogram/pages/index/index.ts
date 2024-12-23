@@ -78,6 +78,9 @@ Page({
     }>,
   },
 
+  onShow() {
+    this.loadTodayDietInfo();
+  },
   onLoad() {
     this.checkLoginStatus();
     // this.fetchHealthyArticles(); // 页面加载时立即获取一次健康文章
