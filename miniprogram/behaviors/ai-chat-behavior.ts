@@ -35,7 +35,7 @@ export default Behavior({
     onInputChange(e) {
       const inputValue = e.detail.value;
       this.setData({
-        inputMessage: inputValue
+        inputMessage: inputValue,
       });
     },
 
@@ -95,7 +95,6 @@ export default Behavior({
       });
     },
 
-
     sendMessage() {
       const { inputMessage } = this.data;
       const token = wx.getStorageSync("token");
@@ -148,36 +147,80 @@ export default Behavior({
       wx.chooseMessageFile({
         count: 1,
         type: "file",
+        extension: ["txt", "pdf", "doc", "docx", "md"],
         success: (res) => {
           const file = res.tempFiles[0];
-          // 实现文件上传逻辑
-          wx.uploadFile({
-            url: `${getApp().globalData.BASE_URL}/chat/upload`,
-            filePath: file.path,
-            name: "file",
-            header: {
-              Authorization: `Bearer ${token}`,
-            },
-            success: (uploadRes) => {
-              const data = JSON.parse(uploadRes.data);
-              const fileUrl = data.fileUrl;
-              const newMessages = [
-                ...this.data.messages,
-                { type: "user", content: "已上传文件", fileUrl },
-              ];
-              this.setData({ messages: newMessages });
-            },
-            fail: (uploadErr) => {
-              console.error("文件上传失败", uploadErr);
-              wx.showToast({
-                title: "文件上传失败",
-                icon: "none",
-              });
-            },
+
+          // 先保存用户的文件名
+          const userMessage = {
+            type: "user",
+            content: file.name,
+            isFile: true,
+          };
+          this.setData({
+            messages: [...this.data.messages, userMessage],
           });
+
+          // 使用 Promise 确保顺序执行
+          this.createFileRecord(token, file.name)
+            .then((recordId) => {
+              wx.showLoading({
+                title: "文件处理中...",
+              }),
+              // 上传文件
+              wx.uploadFile({
+                url: `${BASE_URL}/chat/upload`,
+                filePath: file.path,
+                name: "file",
+                formData: {
+                  recordId: recordId,
+                  fileName: file.name,
+                },
+                method: "POST",
+                header: {
+                  Authorization: `Bearer ${token}`,
+                },
+                success: (uploadRes) => {
+                  // 处理上传成功逻辑
+                  console.log("uploadRes", uploadRes);
+                  wx.hideLoading();
+                  const newMessages = [
+                    ...this.data.messages,
+                    { type: "ai", content: uploadRes.data.response },
+                  ];
+                  this.setData({
+                    messages: newMessages,
+                  });
+                },
+              });
+            })
+            .catch((error) => {
+              console.error("创建文件记录失败", error);
+              wx.hideLoading();
+            });
         },
+      });
+    },
+
+    // 新增方法，返回 Promise
+    createFileRecord(token, fileName) {
+      return new Promise((resolve, reject) => {
+        wx.request({
+          url: `${BASE_URL}/chat/chatForFile`,
+          method: "POST",
+          header: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: { message: fileName },
+          success: (res) => {
+            console.log("res", res);
+            resolve(res.data.recordId);
+          },
+          fail: (error) => {
+            reject(error);
+          },
+        });
       });
     },
   },
 });
-
