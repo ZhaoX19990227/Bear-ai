@@ -164,12 +164,19 @@ page {
 
 .user-info-form input {
   width: 100%;
-  padding: 18px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  font-size: 16px; /* 调整字体大小 */
-}
+  height: 30%;
+  padding: 5rpx 20rpx; /* 减少顶部和底部的内边距 */
+  margin-bottom: 40rpx;
+  border: 2rpx solid rgba(139, 69, 19, 0.1);
+  border-radius: 15rpx;
+  box-shadow: 0 2rpx 5rpx rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 
+  &:focus {
+    border-color: @bear-primary;
+    box-shadow: 0 2rpx 8rpx rgba(139, 69, 19, 0.1);
+  }
+}
 
 .user-info-form .gender-option {
   display: inline-block;
