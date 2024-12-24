@@ -403,16 +403,31 @@ page {
 }
 
 .diet-container {
-  background-color: @bear-background;
+  width: 100%;
+  background-color: white;
   border-radius: 20rpx;
   padding: 20rpx;
-  margin: 20rpx;
-  box-shadow: 0 4rpx 6rpx rgba(0,0,0,0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+
+  // 添加一个装饰性的渐变背景
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, rgba(139, 69, 19, 0.05), rgba(210, 105, 30, 0.05));
+    transform: rotate(-45deg);
+    z-index: -1;
+  }
 }
 
 .diet-header {
   text-align: center;
-  margin-bottom: 20rpx;
+  margin-top: 20rpx;
 }
 
 .diet-title {
@@ -440,19 +455,58 @@ page {
 
 .diet-list {
   max-height: 600rpx;
+  background-color: #FFFFFF;
+  border-radius: 15rpx;
+  padding: 10rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+}
+
+.diet-meal-group {
+  margin-bottom: 20rpx;
+  background-color: #F9F5F0;
+  border-radius: 15rpx;
+  padding: 15rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.08);
+}
+
+.diet-meal-type {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: @bear-primary;
+  margin-bottom: 10rpx;
+  padding-bottom: 10rpx;
+  border-bottom: 2rpx solid rgba(139, 69, 19, 0.1);
 }
 
 .diet-item {
-  background-color: white;
-  border-radius: 15rpx;
+  background-color: #FFFFFF;
+  border-radius: 10rpx;
   padding: 15rpx;
-  margin-bottom: 15rpx;
-  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.1);
+  margin-bottom: 10rpx;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
 
-  &.breakfast { border-left: 8rpx solid #FFA07A; }
-  &.lunch { border-left: 8rpx solid #98FB98; }
-  &.dinner { border-left: 8rpx solid #87CEFA; }
-  &.snack { border-left: 8rpx solid #DDA0DD; }
+  &:hover {
+    transform: translateY(-3rpx);
+    box-shadow: 0 3rpx 6rpx rgba(0,0,0,0.1);
+  }
+
+  &.breakfast { 
+    border-left: 8rpx solid #FFA07A; 
+    background-color: #FFF5E6;
+  }
+  &.lunch { 
+    border-left: 8rpx solid #98FB98; 
+    background-color: #F0FFF0;
+  }
+  &.dinner { 
+    border-left: 8rpx solid #87CEFA; 
+    background-color: #E6F2FF;
+  }
+  &.snack { 
+    border-left: 8rpx solid #DDA0DD; 
+    background-color: #FFF0F5;
+  }
 }
 
 .diet-item-header {

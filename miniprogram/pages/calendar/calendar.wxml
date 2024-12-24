@@ -58,16 +58,13 @@
       <text class="diet-title">🐾 当日饮食</text>
       <view class="diet-summary">
         <view class="summary-item">
-          <image src="/images/bear-calories.png" class="summary-icon"></image>
-          <text>总热量: {{totalCalories}} kcal</text>
+          <text>🔥 总热量: {{totalCalories ? totalCalories : '0'}} kcal</text>
         </view>
         <view class="summary-item">
-          <image src="/images/bear-protein.png" class="summary-icon"></image>
-          <text>总蛋白质: {{totalProtein}} g</text>
+          <text>🍳 总蛋白质: {{totalProtein ? totalProtein : '0'}} g</text>
         </view>
         <view class="summary-item">
-          <image src="/images/bear-fat.png" class="summary-icon"></image>
-          <text>总脂肪: {{totalFat}} g</text>
+          <text>🥩 总脂肪: {{totalFat ? totalFat : '0'}} g</text>
         </view>
       </view>
     </view>
