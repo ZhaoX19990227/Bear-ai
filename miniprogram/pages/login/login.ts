@@ -11,6 +11,14 @@ Page({
       "#F5DEB3", // 小麦色
       "#DEB887", // 柔和的棕色
     ],
+    showUserInfoModal: false,
+    userInfoForm: {
+      age: null,
+      height: null,
+      weight: null,
+      gender: '',
+      email: '',
+    },
   },
 
   onLoad() {
@@ -69,6 +77,7 @@ Page({
     });
   },
 
+
   logout() {
     wx.showModal({
       title: "退出登录",
@@ -87,4 +96,92 @@ Page({
       },
     });
   },
+  openUserInfoModal() {
+    this.setData({ showUserInfoModal: true });
+  },
+  closeUserInfoModal() {
+    this.setData({ showUserInfoModal: false });
+  },
+  selectGender(e) {
+    const gender = e.currentTarget.dataset.gender;
+    this.setData({
+      'userInfoForm.gender': gender
+    });
+  },
+  onUserInfoInput(e) {
+    const { field } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    this.setData({
+      [`userInfoForm.${field}`]: value
+    });
+  },
+  preventTap() {
+    return true;
+  },
+  submitUserInfo() {
+    const { age, height, weight, gender, email } = this.data.userInfoForm;
+    
+    // 简单验证
+    if (!age || !height || !weight || !gender || !email) {
+      wx.showToast({
+        title: '请填写所有信息',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 邮箱验证
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      wx.showToast({
+        title: '请输入正确的邮箱',
+        icon: 'none'
+      });
+      return;
+    }
+    const token = wx.getStorageSync('token');
+    wx.request({
+      url: `${BASE_URL}/user/complete-info`,
+      method: 'POST',
+      header: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      data: this.data.userInfoForm,
+      success: (res) => {
+        if (res.statusCode === 200) {
+          wx.showToast({
+            title: '信息完善成功',
+            icon: 'success'
+          });
+          this.setData({
+            showUserInfoModal: false
+          });
+          // 可以更新本地用户信息
+          wx.setStorageSync('userInfo', {
+            ...wx.getStorageSync('userInfo'),
+            ...this.data.userInfoForm
+          });
+        } else {
+          wx.showToast({
+            title: '信息完善失败',
+            icon: 'none'
+          });
+        }
+      },
+      ail: (err) => {
+        console.error('信息完善失败', err);
+        wx.showToast({
+          title: '网络错误',
+          icon: 'none'
+        });
+      }
+    });
+  },
+  closeUserInfoModal() {
+    this.setData({
+      showUserInfoModal: false
+    });
+  },
+
 });

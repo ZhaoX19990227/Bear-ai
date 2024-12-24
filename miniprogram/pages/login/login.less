@@ -68,3 +68,125 @@ page {
   background-color: #FF5722 !important;
   color: white;
 }
+
+// 用户信息完善模态框
+.user-info-modal {
+  background-color: @bear-background; // 淡奶油色背景
+  border-radius: 30rpx;
+  padding: 30rpx;
+  width: 60%;
+  height: 45%;
+  box-shadow: 0 10rpx 30rpx rgba(139, 69, 19, 0.1);
+}
+
+.user-info-title {
+  text-align: center;
+  font-size: 40rpx;
+  color: @bear-primary;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+  position: relative;
+
+  &::before, &::after {
+    content: '🐻';
+    position: absolute;
+    font-size: 50rpx;
+  }
+
+  &::before {
+    left: -50rpx;
+    top: -10rpx;
+  }
+
+  &::after {
+    right: -50rpx;
+    top: -10rpx;
+  }
+}
+
+.user-info-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info-input {
+  background-color: #FFF;
+  border-radius: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.user-info-gender {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20rpx;
+}
+
+.gender-option {
+  display: flex;
+  align-items: center;
+  background-color: #FFF;
+  border-radius: 20rpx;
+  padding: 10rpx 20rpx;
+  transition: all 0.3s ease;
+
+  &.selected {
+    background-color: @bear-primary;
+    color: #FFF;
+  }
+}
+
+.user-info-submit {
+  background-color: @bear-primary;
+  color: #FFF;
+  border-radius: 30rpx;
+  padding: 15rpx;
+  text-align: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.95);
+    background-color: @bear-secondary;
+  }
+}
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.user-info-form input {
+  width: 100%;
+  padding: 18px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px; /* 调整字体大小 */
+}
+
+
+.user-info-form .gender-option {
+  display: inline-block;
+  padding: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.user-info-form .gender-option.selected {
+  background-color: @bear-secondary;
+}
+
+.user-info-form .user-info-submit {
+  text-align: center;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
