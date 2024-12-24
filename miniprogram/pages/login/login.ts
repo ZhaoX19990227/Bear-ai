@@ -141,13 +141,15 @@ Page({
     }
     const token = wx.getStorageSync('token');
     wx.request({
-      url: `${BASE_URL}/user/complete-info`,
+      url: `${BASE_URL}/user/update`,
       method: 'POST',
       header: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      data: this.data.userInfoForm,
+      data: {
+        ...this.data.userInfoForm,
+      },
       success: (res) => {
         if (res.statusCode === 200) {
           wx.showToast({
