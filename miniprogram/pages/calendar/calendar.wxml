@@ -1,64 +1,96 @@
 <import src="../../templates/ai-chat-template.wxml" />
-<navigation-bar title="饮食记录 🍚" back="{{false}}" color="white" background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
+<navigation-bar title="饮食记录 🍚" back="{{false}}" color="white"
+  background="linear-gradient(135deg, #FFB6C1, #FFD700)"></navigation-bar>
 
 <view class="container">
   <view class="bear-calendar">
-  <!-- 标题栏 -->
-  <view class="bear-calendar-titlebar">
-    <view class="bear-arrow left" bindtap="prevMonth">
-  <view class="arrow-left"></view>
-</view>
-<text class="bear-calendar-month">{{year}}年{{month}}月</text>
-<view class="bear-arrow right" bindtap="nextMonth">
-  <view class="arrow-right"></view>
-</view>
-  </view>
+    <!-- 标题栏 -->
+    <view class="bear-calendar-titlebar">
+      <view class="bear-arrow left" bindtap="prevMonth">
+        <view class="arrow-left"></view>
+      </view>
+      <text class="bear-calendar-month">{{year}}年{{month}}月</text>
+      <view class="bear-arrow right" bindtap="nextMonth">
+        <view class="arrow-right"></view>
+      </view>
+    </view>
 
-  <!-- 星期行 -->
-  <view class="bear-calendar-weekdays">
-    <view wx:for="{{weekdays}}" wx:key="id" class="bear-weekday-item">
-      {{item}}
+    <!-- 星期行 -->
+    <view class="bear-calendar-weekdays">
+      <view wx:for="{{weekdays}}" wx:key="id" class="bear-weekday-item">
+        {{item}}
+      </view>
+    </view>
+
+    <!-- 日期部分 -->
+    <view class="bear-calendar-days">
+      <block wx:for="{{calendarData}}" wx:key="index">
+        <view class="bear-week" wx:if="{{calendarExpanded || index === currentWeekIndex}}">
+          <!-- 展开显示所有周，默认显示当天所在的周 -->
+          <block wx:for="{{item}}" wx:key="index">
+            <block wx:if="{{item === 0}}">
+              <view class="bear-day empty"></view>
+            </block>
+            <block wx:else>
+              <view class="bear-day {{item === selectedDay ? 'selected' : ''}} {{today && item === day ? 'today' : ''}}"
+                bindtap="selectDate" data-value="{{item}}">
+                <text>{{item}}</text>
+              </view>
+            </block>
+          </block>
+        </view>
+      </block>
+    </view>
+
+    <!-- 展开/收起按钮 -->
+    <view class="calendar-toggle" bindtap="toggleCalendar">
+      <view wx:if="{{calendarExpanded}}">
+        <icon type="success_no_circle" size="30" class="toggle-icon expanded"></icon>
+      </view>
+      <view wx:else>
+        <icon type="success" size="30" class="toggle-icon collapsed"></icon>
+      </view>
     </view>
   </view>
 
-  <!-- 日期部分 -->
-  <view class="bear-calendar-days">
-    <block wx:for="{{calendarData}}" wx:key="index">
-      <view 
-        class="bear-week" 
-        wx:if="{{calendarExpanded || index === currentWeekIndex}}"
-      >
-        <!-- 展开显示所有周，默认显示当天所在的周 -->
-        <block wx:for="{{item}}" wx:key="index">
-          <block wx:if="{{item === 0}}">
-            <view class="bear-day empty"></view>
-          </block>
-          <block wx:else>
-            <view
-              class="bear-day {{item === selectedDay ? 'selected' : ''}} {{today && item === day ? 'today' : ''}}"
-              bindtap="selectDate"
-              data-value="{{item}}"
-            >
-              <text>{{item}}</text>
-            </view>
-          </block>
-        </block>
+  <view class="diet-container">
+    <view class="diet-header">
+      <text class="diet-title">🐾 当日饮食</text>
+      <view class="diet-summary">
+        <view class="summary-item">
+          <image src="/images/bear-calories.png" class="summary-icon"></image>
+          <text>总热量: {{totalCalories}} kcal</text>
+        </view>
+        <view class="summary-item">
+          <image src="/images/bear-protein.png" class="summary-icon"></image>
+          <text>总蛋白质: {{totalProtein}} g</text>
+        </view>
+        <view class="summary-item">
+          <image src="/images/bear-fat.png" class="summary-icon"></image>
+          <text>总脂肪: {{totalFat}} g</text>
+        </view>
       </view>
-    </block>
+    </view>
+
+    <scroll-view scroll-y class="diet-list">
+      <view wx:for="{{dietRecords}}" wx:key="id" class="diet-item {{item.mealType}}">
+        <view class="diet-item-header">
+          <text class="meal-type">{{item.mealType}}</text>
+          <text class="food-name">{{item.food_name}}</text>
+        </view>
+        <view class="diet-item-details">
+          <text>重量: {{item.weight}}g</text>
+          <text>热量: {{item.calories}} kcal</text>
+          <text>蛋白质: {{item.protein}}g</text>
+          <text>脂肪: {{item.fat}}g</text>
+        </view>
+      </view>
+    </scroll-view>
   </view>
 
-  <!-- 展开/收起按钮 -->
-<view class="calendar-toggle" bindtap="toggleCalendar">
-  <view wx:if="{{calendarExpanded}}">
-    <icon type="success_no_circle" size="30" class="toggle-icon expanded"></icon>
-  </view>
-  <view wx:else>
-    <icon type="success" size="30" class="toggle-icon collapsed"></icon>
-  </view>
-</view>
-</view>
+
 </view>
 
 
 <template is="ai-chat-button" data="{{showAIChat, userInfo}}" />
-<template is="ai-chat-modal" data="{{showAIChat, userInfo, messages, inputMessage}}"/>
+<template is="ai-chat-modal" data="{{showAIChat, userInfo, messages, inputMessage}}" />

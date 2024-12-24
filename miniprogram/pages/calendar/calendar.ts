@@ -138,27 +138,43 @@ Page({
     this.fetchDietRecords(selectedDay);
   },
 
-  fetchDietRecords(date) {
+  fetchDietRecords(selectedDay) {
     const token = wx.getStorageSync("token");
+    const selectedDate = `${this.data.year}-${this.data.month.toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
+    console.log("selectedDate", selectedDate);
     wx.request({
-      url: `${BASE_URL}/diet/records`,
+      url: `${BASE_URL}/diet/recordsByDate`,
       method: "GET",
       header: {
         Authorization: `Bearer ${token}`,
       },
       data: {
-        date: date,
+        date: selectedDate
       },
       success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          this.setData({
-            dietRecords: res.data.data,
-          });
+        if (res.statusCode === 200) {
+          const dietRecords = res.data;
+        
+        // 计算总计
+        const totalCalories = dietRecords.reduce((sum, record) => sum + record.calories, 0).toFixed(2);
+        const totalProtein = dietRecords.reduce((sum, record) => sum + record.protein, 0).toFixed(2);
+        const totalFat = dietRecords.reduce((sum, record) => sum + record.fat, 0).toFixed(2);
+
+        this.setData({
+          dietRecords,
+          totalCalories,
+          totalProtein,
+          totalFat
+        });
         }
       },
       fail: (err) => {
         console.error("获取饮食记录失败:", err);
-      },
+        wx.showToast({
+          title: "获取饮食记录失败",
+          icon: "none"
+        });
+      }
     });
   },
 
