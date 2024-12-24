@@ -32,19 +32,19 @@
   </view>
     <!-- 今日饮食总览 -->
     <view class="diet-summary">
-        <view class="summary-item">
-        <text class="label">🔥</text>
-        <text class="value">{{totalCalories}} 千卡</text>
+      <view class="summary-item">
+        <text class="label">🔥 </text>
+        <text class="value">{{totalCalories ? totalCalories : '0'}} 千卡</text>
       </view>
       <view class="summary-item">
-        <text class="label">🍳</text>
-        <text class="value">{{totalProtein}} 克</text>
+        <text class="label">🍳 </text>
+          <text class="value">{{totalProtein ? totalProtein : '0'}} 克</text>
       </view>
       <view class="summary-item">
-        <text class="label">🥩</text>
-        <text class="value">{{totalFat}} 克</text>
+        <text class="label">🥩 </text>
+        <text class="value">{{totalFat ? totalFat : '0'}} 克</text>
       </view>
-    </view> 
+    </view>
 
     <!-- 今日饮食记录列表 -->
     <scroll-view 

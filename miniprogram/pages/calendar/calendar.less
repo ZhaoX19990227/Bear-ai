@@ -2,25 +2,25 @@
 @import "../../colorui/main.wxss";
 @import "../../colorui/icon.wxss";
 
-@bear-primary: #8B4513;      // 棕色，模仿熊的毛色
-@bear-secondary: #D2691E;    // 更亮的棕色
-@bear-background: #FFF8DC;   // 奶油色背景
+@bear-primary: #8b4513; // 棕色，模仿熊的毛色
+@bear-secondary: #d2691e; // 更亮的棕色
+@bear-background: #fff8dc; // 奶油色背景
 
 page {
   min-height: 100vh; /* 使用 min-height 以适应更多内容 */
   display: flex;
   flex-direction: column;
   background-color: @bear-background;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+    sans-serif;
+  overflow: hidden;
 }
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-grow: 1;
   padding: 0 15rpx;
   width: 100%;
-  background-color: @bear-background;
 }
 
 // 添加熊爪装饰
@@ -41,8 +41,6 @@ page {
   font-size: 50rpx;
   opacity: 0.3;
 }
-
-
 
 // AI 聊天模态框样式
 .chat-messages {
@@ -74,7 +72,7 @@ page {
   padding: 15rpx;
   border-radius: 10rpx;
   background-color: white;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 }
 
 .message-file {
@@ -97,7 +95,7 @@ page {
 }
 
 .user-message .message-text {
-  background-color: #07C160;
+  background-color: #07c160;
   color: white;
 }
 
@@ -132,7 +130,7 @@ page {
 }
 
 .send-btn {
-  color: #07C160;
+  color: #07c160;
   font-size: 40rpx;
 }
 
@@ -145,7 +143,7 @@ page {
   height: 120rpx; /* 放大 */
   background-color: white;
   border-radius: 50%;
-  box-shadow: 0 5rpx 20rpx rgba(0,0,0,0.1);
+  box-shadow: 0 5rpx 20rpx rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,13 +152,25 @@ page {
 }
 
 .ai-chat-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -10rpx;
   left: -10rpx;
   right: -10rpx;
   bottom: -10rpx;
-  background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffd6a5, #fdffb6, #caffbf, #9bf6ff, #a0c4ff, #bdb2ff, #ffc6ff, #ff9a9e);
+  background: linear-gradient(
+    45deg,
+    #ff9a9e,
+    #fad0c4,
+    #ffd6a5,
+    #fdffb6,
+    #caffbf,
+    #9bf6ff,
+    #a0c4ff,
+    #bdb2ff,
+    #ffc6ff,
+    #ff9a9e
+  );
   background-size: 400% 400%;
   border-radius: 50%;
   filter: blur(10rpx);
@@ -170,9 +180,15 @@ page {
 }
 
 @keyframes gradient-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .ai-chat-button:active {
@@ -236,7 +252,7 @@ page {
 
   .message-file {
     margin-top: 10rpx;
-    
+
     .message-image {
       max-width: 200rpx;
       max-height: 200rpx;
@@ -247,7 +263,7 @@ page {
 
 .bear-calendar {
   border-radius: 20rpx;
-  background: #FFF;
+  background: #fff;
   box-shadow: 0 5rpx 10rpx rgba(0, 0, 0, 0.1);
   padding: 20rpx;
 }
@@ -268,7 +284,7 @@ page {
 
 .bear-arrow {
   font-size: 36rpx;
-  color: #FF8C00;
+  color: #ff8c00;
   cursor: pointer;
 }
 
@@ -314,26 +330,26 @@ page {
   align-items: center;
   margin: 5rpx;
   border-radius: 50%;
-  background: #FFFAFA;
+  background: #fffafa;
   font-size: 28rpx;
   color: #333;
   transition: all 0.3s ease;
 }
 
 .bear-day.today {
-  background: linear-gradient(135deg, #FFD700, #FF6347);
-  color: #FFF;
+  background: linear-gradient(135deg, #ffd700, #ff6347);
+  color: #fff;
   font-weight: bold;
 }
 
 .bear-day.selected {
-  background: linear-gradient(135deg, #6A5ACD, #483D8B);
-  color: #FFF;
+  background: linear-gradient(135deg, #6a5acd, #483d8b);
+  color: #fff;
   transform: scale(1.1);
 }
 
 .bear-day:hover {
-  background: #FFDAB9;
+  background: #ffdab9;
   transform: scale(1.1);
 }
 .bear-calendar-days .bear-week {
@@ -386,7 +402,8 @@ page {
   background-color: #ffd700; /* 悬停时更亮的黄色 */
 }
 
-.arrow-left, .arrow-right {
+.arrow-left,
+.arrow-right {
   width: 0;
   height: 0;
   border-style: solid;
@@ -404,22 +421,27 @@ page {
 
 .diet-container {
   width: 100%;
-  background-color: white;
+  background-color: sandybrown;
   border-radius: 20rpx;
   padding: 20rpx;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  margin-top: 20rpx;
 
   // 添加一个装饰性的渐变背景
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, rgba(139, 69, 19, 0.05), rgba(210, 105, 30, 0.05));
+    background: linear-gradient(
+      45deg,
+      rgba(139, 69, 19, 0.05),
+      rgba(210, 105, 30, 0.05)
+    );
     transform: rotate(-45deg);
     z-index: -1;
   }
@@ -438,14 +460,24 @@ page {
 
 .diet-summary {
   display: flex;
-  justify-content: space-around;
-  margin: 20rpx 0;
+  justify-content: space-between; /* 使用 evenly 使项间距均匀 */
+  align-items: center;
+  margin-bottom: 20rpx; /* 增加底部间距，避免与下方元素重叠 */
+}
+.diet-records-list {
+  width: 100%;
+  max-height: 600rpx;
+  margin-top: 0;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .summary-item {
   display: flex;
   align-items: center;
-  
+
   .summary-icon {
     width: 50rpx;
     height: 50rpx;
@@ -455,18 +487,17 @@ page {
 
 .diet-list {
   max-height: 600rpx;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 15rpx;
-  padding: 10rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .diet-meal-group {
   margin-bottom: 20rpx;
-  background-color: #F9F5F0;
+  background-color: #f9f5f0;
   border-radius: 15rpx;
   padding: 15rpx;
-  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.08);
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.08);
 }
 
 .diet-meal-type {
@@ -479,33 +510,33 @@ page {
 }
 
 .diet-item {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 10rpx;
   padding: 15rpx;
   margin-bottom: 10rpx;
-  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.06);
+  box-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-3rpx);
-    box-shadow: 0 3rpx 6rpx rgba(0,0,0,0.1);
+    box-shadow: 0 3rpx 6rpx rgba(0, 0, 0, 0.1);
   }
 
-  &.breakfast { 
-    border-left: 8rpx solid #FFA07A; 
-    background-color: #FFF5E6;
+  &.breakfast {
+    border-left: 8rpx solid #ffa07a;
+    background-color: #fff5e6;
   }
-  &.lunch { 
-    border-left: 8rpx solid #98FB98; 
-    background-color: #F0FFF0;
+  &.lunch {
+    border-left: 8rpx solid #98fb98;
+    background-color: #f0fff0;
   }
-  &.dinner { 
-    border-left: 8rpx solid #87CEFA; 
-    background-color: #E6F2FF;
+  &.dinner {
+    border-left: 8rpx solid #87cefa;
+    background-color: #e6f2ff;
   }
-  &.snack { 
-    border-left: 8rpx solid #DDA0DD; 
-    background-color: #FFF0F5;
+  &.snack {
+    border-left: 8rpx solid #dda0dd;
+    background-color: #fff0f5;
   }
 }
 
@@ -519,9 +550,41 @@ page {
   font-weight: bold;
   color: @bear-primary;
 }
+.food-name {
+  font-weight: bold;
+  color: @bear-primary;
+}
+.food-weight {
+  font-weight: bold;
+  color: @bear-primary;
+}
 
 .diet-item-details {
   display: flex;
   justify-content: space-between;
   color: #666;
+}
+.diet-record-content {
+  display: flex;
+  flex-direction: column;
+}
+.diet-record-name {
+  font-weight: bold;
+  color: @bear-primary;
+  font-size: 28rpx;
+  margin-bottom: 5rpx;
+}
+.diet-record-details {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 24rpx;
+}
+.diet-record-time {
+  color: #888;
+  font-size: 24rpx;
+}
+.diet-record {
+  padding: 10rpx;
+  border-radius: 10rpx;
 }

@@ -58,31 +58,44 @@
       <text class="diet-title">🐾 当日饮食</text>
       <view class="diet-summary">
         <view class="summary-item">
-          <text>🔥 总热量: {{totalCalories ? totalCalories : '0'}} kcal</text>
+          <text class="label">🔥 </text>
+          <text class="value">{{totalCalories ? totalCalories : '0'}} 千卡</text>
         </view>
         <view class="summary-item">
-          <text>🍳 总蛋白质: {{totalProtein ? totalProtein : '0'}} g</text>
+          <text class="label">🍳 </text>
+            <text class="value">{{totalProtein ? totalProtein : '0'}} 克</text>
         </view>
         <view class="summary-item">
-          <text>🥩 总脂肪: {{totalFat ? totalFat : '0'}} g</text>
+          <text class="label">🥩 </text>
+          <text class="value">{{totalFat ? totalFat : '0'}} 克</text>
         </view>
       </view>
     </view>
 
-    <scroll-view scroll-y class="diet-list">
-      <view wx:for="{{dietRecords}}" wx:key="id" class="diet-item {{item.mealType}}">
-        <view class="diet-item-header">
-          <text class="meal-type">{{item.mealType}}</text>
-          <text class="food-name">{{item.food_name}}</text>
-        </view>
-        <view class="diet-item-details">
-          <text>重量: {{item.weight}}g</text>
-          <text>热量: {{item.calories}} kcal</text>
-          <text>蛋白质: {{item.protein}}g</text>
-          <text>脂肪: {{item.fat}}g</text>
-        </view>
+    <scroll-view 
+    scroll-y 
+    class="diet-records-list" 
+    wx:if="{{groupedDietRecords.length > 0}}"
+  >
+    <block wx:for="{{groupedDietRecords}}" wx:key="mealType">
+      <view class="diet-meal-group">
+        <view class="diet-meal-type">{{item.mealType}}</view>
+        <block wx:for="{{item.records}}" wx:key="index" wx:for-item="record">
+          <view class="cu-item diet-record">
+            <view class="diet-record-content">
+              <text class="diet-record-name">{{record.food_name}} - {{record.weight}}克</text>
+              <view class="diet-record-details">
+                <text>热量：{{record.calories}} 千卡</text>
+                <text>蛋白质：{{record.protein}} 克</text>
+                <text>脂肪：{{record.fat}} 克</text>
+                <text class="diet-record-time">{{record.time}}</text>
+              </view>
+            </view>
+          </view>
+        </block>
       </view>
-    </scroll-view>
+    </block>
+  </scroll-view>
   </view>
 
 

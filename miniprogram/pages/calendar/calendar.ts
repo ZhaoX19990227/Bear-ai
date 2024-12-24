@@ -1,12 +1,30 @@
 import { BASE_URL } from "../../config";
 import aiChatBehavior from "../../behaviors/ai-chat-behavior";
+
+// 定义饮食记录的接口
+interface DietRecord {
+  id?: number;
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack';
+  foodName: string;
+  calories: number;
+  protein: number;
+  fat: number;
+  weight: number;
+}
+
+// 定义分组后的饮食记录接口
+interface GroupedDietRecord {
+  mealType: string;
+  records: DietRecord[];
+}
+
 Page({
   behaviors: [aiChatBehavior],
   data: {
     userInfo: null,
     currentDate: "",
     selectedDate: "",
-    dietRecords: [],
+    dietRecords: [] as DietRecord[],
     exerciseRecords: [],
     weightRecords: [],
     year: new Date().getFullYear(),
@@ -27,8 +45,23 @@ Page({
       isFile?: boolean;
     }>,
     inputMessage: "",
+    // 在 data 中添加
+    groupedDietRecords: [] as Array<{
+      mealType: string;
+      records: Array<{
+        food_name: string;
+        calories: number;
+        protein: number;
+        fat: number;
+        weight: number;
+        time: string;
+      }>;
+    }>,
   },
 
+  onShow() {
+    this.fetchDietRecords(new Date().getDate());
+  },
   onLoad() {
     this.checkLoginStatus();
     this.generateCalendar();
@@ -138,6 +171,47 @@ Page({
     this.fetchDietRecords(selectedDay);
   },
 
+// 添加分组方法
+groupDietRecordsByMealType(records: any[]): Array<{
+  mealType: string;
+  records: any[];
+}> {
+  const mealTypeOrder = ["早餐", "午餐", "下午茶", "晚餐", "加餐", "其他"];
+
+  // 动态获取实际出现的 mealType
+  const actualMealTypes = Array.from(
+    new Set(records.map((record) => record.mealType))
+  );
+
+  // 合并并去重
+  const combinedMealTypeOrder = [
+    ...new Set([...mealTypeOrder, ...actualMealTypes]),
+  ];
+  const groupedRecords = records.reduce((acc, record) => {
+    const existingGroup = acc.find(
+      (group) => group.mealType === record.mealType
+    );
+
+    if (existingGroup) {
+      existingGroup.records.push(record);
+    } else {
+      acc.push({
+        mealType: record.mealType,
+        records: [record],
+      });
+    }
+
+    return acc;
+  }, [] as Array<{ mealType: string; records: any[] }>);
+
+  // 按照预定义顺序排序
+  return groupedRecords.sort(
+    (a, b) =>
+      combinedMealTypeOrder.indexOf(a.mealType) -
+      combinedMealTypeOrder.indexOf(b.mealType)
+  );
+},
+
   fetchDietRecords(selectedDay) {
     const token = wx.getStorageSync("token");
     const selectedDate = `${this.data.year}-${this.data.month.toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
@@ -155,17 +229,21 @@ Page({
         if (res.statusCode === 200) {
           const dietRecords = res.data;
         
-        // 计算总计
-        const totalCalories = dietRecords.reduce((sum, record) => sum + record.calories, 0).toFixed(2);
-        const totalProtein = dietRecords.reduce((sum, record) => sum + record.protein, 0).toFixed(2);
-        const totalFat = dietRecords.reduce((sum, record) => sum + record.fat, 0).toFixed(2);
+          // 计算总计
+          const totalCalories = dietRecords.reduce((sum, record) => sum + record.calories, 0).toFixed(2);
+          const totalProtein = dietRecords.reduce((sum, record) => sum + record.protein, 0).toFixed(2);
+          const totalFat = dietRecords.reduce((sum, record) => sum + record.fat, 0).toFixed(2);
 
-        this.setData({
-          dietRecords,
-          totalCalories,
-          totalProtein,
-          totalFat
-        });
+          // 分组饮食记录
+          const records = this.groupDietRecordsByMealType(dietRecords);
+
+          this.setData({
+            dietRecords,
+            groupedDietRecords:records,
+            totalCalories,
+            totalProtein,
+            totalFat
+          });
         }
       },
       fail: (err) => {

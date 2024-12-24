@@ -150,7 +150,9 @@ Page({
           if (res.statusCode && res.data) {
             // 检查响应状态
             const records = res.data;
-            const updatedRecords = [...records, ...this.data.todayDietRecords];
+            console.log("records:", records);
+            const updatedRecords = records;
+            console.log("updatedRecords:", updatedRecords);
             // 更新页面数据
             this.setData({
               todayDietRecords: updatedRecords,
