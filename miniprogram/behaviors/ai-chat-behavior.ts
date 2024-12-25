@@ -151,6 +151,17 @@ export default Behavior({
         success: (res) => {
           const file = res.tempFiles[0];
 
+          // 检查文件类型
+          const allowedExtensions = ['txt', 'pdf', 'doc', 'docx', 'md'];
+          const fileExtension = file.name.split('.').pop()?.toLowerCase();
+          if (!allowedExtensions.includes(fileExtension)) {
+            wx.showToast({
+              title: '小肉熊不支持解析该文件类型奥～',
+              icon: 'none',
+            });
+            return;
+          }
+
           // 先保存用户的文件名
           const userMessage = {
             type: "user",
